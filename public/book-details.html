@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book details | LibraManage</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/book-details.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>LibraManage</h1>
+        <p>Your library, organised.</p>
+
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/catalogue.html">Catalogue</a>
+        </nav>
+    </header>
+
+    <main id="book-page">
+        <p>
+            <a href="/catalogue.html">Back to catalogue</a>
+        </p>
+
+        <section class="welcome" aria-labelledby="book-title">
+            <h2 id="book-title">Book details</h2>
+
+            <p id="book-message" role="status">
+                Loading book details...
+            </p>
+
+            <div id="book-information" hidden>
+                <dl id="book-metadata"></dl>
+
+                <h3>Description</h3>
+                <p id="book-description"></p>
+            </div>
+        </section>
+
+        <section
+            id="availability-section"
+            class="catalogue-results"
+            aria-labelledby="availability-heading"
+            hidden
+        >
+            <h2 id="availability-heading">Branch availability</h2>
+
+            <p id="availability-message"></p>
+
+            <div id="branch-results" class="book-grid"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 LibraManage</p>
+    </footer>
+</body>
+</html>

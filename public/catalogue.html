@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogue | LibraManage</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/catalogue.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>LibraManage</h1>
+        <p>Your library, organised.</p>
+
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/catalogue.html" aria-current="page">Catalogue</a>
+        </nav>
+    </header>
+
+    <section class="catalogue-results" aria-labelledby="results-heading">
+        <h2 id="results-heading">Books</h2>
+        <p id="result-message" role="status"></p>
+        <div id="book-results" class="book-grid"></div>
+    </section>
+
+    <main>
+        <section class="welcome" aria-labelledby="catalogue-heading">
+            <h2 id="catalogue-heading">Book catalogue</h2>
+            <p>Browse books and check their availability.</p>
+
+            <form
+                id="catalogue-search"
+                class="catalogue-search"
+                action="/catalogue.html"
+                method="get"
+            >
+                <div class="form-field">
+                    <label for="search-term">Search books</label>
+                    <input
+                        type="search"
+                        id="search-term"
+                        name="search"
+                        placeholder="Title, author or ISBN"
+                        maxlength="150"
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="branch-filter">Library branch</label>
+                    <select id="branch-filter" name="branch">
+                        <option value="">All branches</option>
+                        <option value="pretoria">Pretoria Central</option>
+                        <option value="centurion">Centurion</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="category-filter">Category</label>
+                    <select id="category-filter" name="category">
+                        <option value="">All categories</option>
+                        <option value="technology">Technology</option>
+                        <option value="fiction">Fiction</option>
+                        <option value="non-fiction">Non-fiction</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="button-primary">
+                    Search
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 LibraManage</p>
+    </footer>
+</body>
+</html>
