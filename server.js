@@ -1,20 +1,40 @@
 const path = require("path");
 
-// Load environment settings before importing database modules.
+// Load settings before importing database modules.
 require("dotenv").config({
     path: path.join(__dirname, ".env")
 });
 
 const express = require("express");
+const helmet = require("helmet");
+
 const pool = require("./config/database");
 const catalogueRouter = require("./routes/catalogue");
+const authRouter = require("./routes/auth");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 
 app.disable("x-powered-by");
 
-// Check whether the application can communicate with MySQL.
+// Add security headers.
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                "upgrade-insecure-requests":
+                    process.env.NODE_ENV === "production" ? [] : null
+            }
+        }
+    })
+);
+
+// Read JSON requests and limit their size.
+app.use("/api", express.json({
+    limit: "16kb"
+}));
+
+// Check the database connection.
 app.get("/api/health", async (req, res) => {
     try {
         await pool.execute("SELECT 1");
@@ -33,20 +53,46 @@ app.get("/api/health", async (req, res) => {
     }
 });
 
-// Catalogue API.
+// Application routes.
 app.use("/api/books", catalogueRouter);
+app.use("/api/auth", authRouter);
 
-// Return JSON for API addresses that do not exist.
+// Handle unknown API addresses.
 app.use("/api", (req, res) => {
     res.status(404).json({
         message: "API endpoint not found."
     });
 });
 
-// Serve the HTML, CSS and browser JavaScript.
+// Serve the website.
 app.use(express.static(path.join(__dirname, "public")));
 
-// Verify the database connection before starting the website.
+// Handle errors without exposing internal details.
+app.use((error, req, res, next) => {
+    if (res.headersSent) {
+        return next(error);
+    }
+
+    if (error.type === "entity.parse.failed") {
+        return res.status(400).json({
+            message: "The request contains invalid JSON."
+        });
+    }
+
+    if (error.type === "entity.too.large") {
+        return res.status(413).json({
+            message: "The submitted information is too large."
+        });
+    }
+
+    console.error("Application error:", error.message);
+
+    return res.status(500).json({
+        message: "Something went wrong. Please try again."
+    });
+});
+
+// Start only when MySQL is available.
 async function startServer() {
     try {
         await pool.execute("SELECT 1");

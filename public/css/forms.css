@@ -1,0 +1,57 @@
+.account-form {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 560px;
+    margin-top: 1.5rem;
+}
+
+.account-form[hidden] {
+    display: none;
+}
+
+.account-form .form-help {
+    margin-top: 0.35rem;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.account-form .field-error {
+    margin-top: 0.35rem;
+    font-size: 0.9rem;
+    color: #b42318;
+}
+
+.account-form [aria-invalid="true"] {
+    border-color: #b42318;
+}
+
+.account-form .button-primary {
+    justify-self: start;
+}
+
+.account-form button:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+.welcome .form-message {
+    margin-top: 1.25rem;
+    padding: 0.85rem 1rem;
+    border-radius: 6px;
+    overflow-wrap: anywhere;
+}
+
+.form-message[data-state="loading"] {
+    color: #0c4a6e;
+    background-color: #e0f2fe;
+}
+
+.form-message[data-state="error"] {
+    color: #842029;
+    background-color: #fce8e8;
+}
+
+.form-message[data-state="success"] {
+    color: #14532d;
+    background-color: #dcfce7;
+}

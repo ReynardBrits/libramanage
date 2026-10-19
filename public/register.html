@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register | LibraManage</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/forms.css">
+
+    <script src="/js/register.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>LibraManage</h1>
+        <p>Your library, organised.</p>
+
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/catalogue.html">Catalogue</a>
+            <a href="/register.html" aria-current="page">Register</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="welcome" aria-labelledby="register-heading">
+            <h2 id="register-heading">Create a member account</h2>
+            <p>Register to become a LibraManage library member.</p>
+
+            <form
+                id="registration-form"
+                class="account-form"
+                action="/api/auth/register"
+                method="post"
+            >
+                <div class="form-field">
+                    <label for="firstName">First name</label>
+                    <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        autocomplete="given-name"
+                        maxlength="60"
+                        aria-describedby="firstName-error"
+                        required
+                    >
+                    <p
+                        id="firstName-error"
+                        class="field-error"
+                        hidden
+                    ></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="lastName">Last name</label>
+                    <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        autocomplete="family-name"
+                        maxlength="60"
+                        aria-describedby="lastName-error"
+                        required
+                    >
+                    <p
+                        id="lastName-error"
+                        class="field-error"
+                        hidden
+                    ></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="email">Email address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        autocomplete="email"
+                        maxlength="150"
+                        aria-describedby="email-error"
+                        required
+                    >
+                    <p
+                        id="email-error"
+                        class="field-error"
+                        hidden
+                    ></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="new-password"
+                        minlength="15"
+                        maxlength="128"
+                        aria-describedby="password-help password-error"
+                        required
+                    >
+                    <p id="password-help" class="form-help">
+                        Use 15–128 characters. A memorable sentence works well.
+                    </p>
+                    <p
+                        id="password-error"
+                        class="field-error"
+                        hidden
+                    ></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="confirmPassword">Confirm password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        autocomplete="new-password"
+                        minlength="15"
+                        maxlength="128"
+                        aria-describedby="confirmPassword-error"
+                        required
+                    >
+                    <p
+                        id="confirmPassword-error"
+                        class="field-error"
+                        hidden
+                    ></p>
+                </div>
+
+                <button
+                    type="submit"
+                    id="register-button"
+                    class="button-primary"
+                >
+                    Create account
+                </button>
+            </form>
+
+            <p
+                id="registration-message"
+                class="form-message"
+                role="status"
+                tabindex="-1"
+                hidden
+            ></p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 LibraManage</p>
+    </footer>
+</body>
+</html>
