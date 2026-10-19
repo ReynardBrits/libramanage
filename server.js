@@ -16,6 +16,7 @@ const {
 
 const catalogueRouter = require("./routes/catalogue");
 const authRouter = require("./routes/auth");
+const manageBooksRouter = require("./routes/manage-books");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -33,11 +34,11 @@ app.use(
     })
 );
 
+// Allow book descriptions while keeping request sizes bounded.
 app.use("/api", express.json({
-    limit: "16kb"
+    limit: "32kb"
 }));
 
-// Health checks do not require a user session.
 app.get("/api/health", async (req, res) => {
     try {
         await pool.execute("SELECT 1");
@@ -56,11 +57,11 @@ app.get("/api/health", async (req, res) => {
     }
 });
 
-// Make sessions available to application API routes.
 app.use("/api", sessionMiddleware);
 
 app.use("/api/books", catalogueRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/manage/books", manageBooksRouter);
 
 app.use("/api", (req, res) => {
     res.status(404).json({
@@ -97,10 +98,8 @@ app.use((error, req, res, next) => {
 async function startServer() {
     try {
         await sessionStore.onReady();
-
         await pool.execute("SELECT 1");
 
-        // Confirm that the sessions table from the previous step exists.
         await pool.execute(
             "SELECT session_id FROM sessions LIMIT 1"
         );

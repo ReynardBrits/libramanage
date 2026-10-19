@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage books | LibraManage</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/manage-books.css">
+
+    <script src="/js/manage-books.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>LibraManage</h1>
+        <p>Your library, organised.</p>
+
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/catalogue.html">Catalogue</a>
+            <a href="/login.html">My account</a>
+            <a href="/manage-books.html" aria-current="page">
+                Manage books
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="welcome" aria-labelledby="manage-heading">
+            <h2 id="manage-heading">Add a book</h2>
+
+            <p>Add a title and its first copies to a library branch.</p>
+
+            <p
+                id="manage-message"
+                class="form-message"
+                role="status"
+                tabindex="-1"
+            >
+                Checking access...
+            </p>
+
+            <p id="sign-in-prompt" hidden>
+                <a href="/login.html">Sign in to your account</a>
+            </p>
+
+            <form
+                id="book-form"
+                class="account-form manage-form"
+                action="/api/manage/books"
+                method="post"
+                hidden
+            >
+                <div class="form-field wide">
+                    <label for="title">Book title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        maxlength="255"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="isbn">ISBN</label>
+                    <input
+                        type="text"
+                        id="isbn"
+                        name="isbn"
+                        maxlength="20"
+                        placeholder="9780137081073"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="publicationYear">
+                        Publication year (optional)
+                    </label>
+                    <input
+                        type="number"
+                        id="publicationYear"
+                        name="publicationYear"
+                        min="1"
+                        step="1"
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="categoryId">Category</label>
+                    <select id="categoryId" name="categoryId" required>
+                        <option value="">Choose a category</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="publisherId">Publisher (optional)</label>
+                    <select id="publisherId" name="publisherId">
+                        <option value="">Not recorded</option>
+                    </select>
+                </div>
+
+                <div class="form-field wide">
+                    <label for="authorIds">Authors</label>
+                    <select
+                        id="authorIds"
+                        name="authorIds"
+                        multiple
+                        size="4"
+                        aria-describedby="authors-help"
+                        required
+                    ></select>
+
+                    <p id="authors-help" class="form-help">
+                        Select one or more authors. Hold Ctrl on Windows
+                        or Command on Mac to select multiple authors.
+                    </p>
+                </div>
+
+                <div class="form-field">
+                    <label for="branchId">Library branch</label>
+                    <select id="branchId" name="branchId" required>
+                        <option value="">Choose a branch</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="initialCopies">Number of copies</label>
+                    <input
+                        type="number"
+                        id="initialCopies"
+                        name="initialCopies"
+                        min="1"
+                        max="20"
+                        step="1"
+                        value="1"
+                        required
+                    >
+                </div>
+
+                <div class="form-field wide">
+                    <label for="description">Description (optional)</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        maxlength="5000"
+                        rows="5"
+                    ></textarea>
+                </div>
+
+                <button
+                    type="submit"
+                    id="save-book-button"
+                    class="button-primary wide"
+                >
+                    Add book
+                </button>
+            </form>
+
+            <p id="created-book-prompt" hidden>
+                <a id="created-book-link" href="/catalogue.html">
+                    View the added book
+                </a>
+            </p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 LibraManage</p>
+    </footer>
+</body>
+</html>
