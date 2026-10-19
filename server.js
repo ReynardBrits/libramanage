@@ -1,6 +1,5 @@
 const path = require("path");
 
-// Load settings before importing database modules.
 require("dotenv").config({
     path: path.join(__dirname, ".env")
 });
@@ -9,6 +8,12 @@ const express = require("express");
 const helmet = require("helmet");
 
 const pool = require("./config/database");
+
+const {
+    sessionStore,
+    sessionMiddleware
+} = require("./config/session");
+
 const catalogueRouter = require("./routes/catalogue");
 const authRouter = require("./routes/auth");
 
@@ -17,7 +22,6 @@ const PORT = Number(process.env.PORT || 3000);
 
 app.disable("x-powered-by");
 
-// Add security headers.
 app.use(
     helmet({
         contentSecurityPolicy: {
@@ -29,12 +33,11 @@ app.use(
     })
 );
 
-// Read JSON requests and limit their size.
 app.use("/api", express.json({
     limit: "16kb"
 }));
 
-// Check the database connection.
+// Health checks do not require a user session.
 app.get("/api/health", async (req, res) => {
     try {
         await pool.execute("SELECT 1");
@@ -53,21 +56,20 @@ app.get("/api/health", async (req, res) => {
     }
 });
 
-// Application routes.
+// Make sessions available to application API routes.
+app.use("/api", sessionMiddleware);
+
 app.use("/api/books", catalogueRouter);
 app.use("/api/auth", authRouter);
 
-// Handle unknown API addresses.
 app.use("/api", (req, res) => {
     res.status(404).json({
         message: "API endpoint not found."
     });
 });
 
-// Serve the website.
 app.use(express.static(path.join(__dirname, "public")));
 
-// Handle errors without exposing internal details.
 app.use((error, req, res, next) => {
     if (res.headersSent) {
         return next(error);
@@ -92,12 +94,19 @@ app.use((error, req, res, next) => {
     });
 });
 
-// Start only when MySQL is available.
 async function startServer() {
     try {
+        await sessionStore.onReady();
+
         await pool.execute("SELECT 1");
 
+        // Confirm that the sessions table from the previous step exists.
+        await pool.execute(
+            "SELECT session_id FROM sessions LIMIT 1"
+        );
+
         console.log("Connected to MySQL.");
+        console.log("Session storage is ready.");
 
         const server = app.listen(PORT, () => {
             console.log(
@@ -110,9 +119,13 @@ async function startServer() {
             process.exit(1);
         });
     } catch (error) {
-        console.error("Database connection failed:", error.message);
+        console.error("Server startup failed:", error.message);
 
-        await pool.end();
+        await Promise.allSettled([
+            sessionStore.close(),
+            pool.end()
+        ]);
+
         process.exitCode = 1;
     }
 }

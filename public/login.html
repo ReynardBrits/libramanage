@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My account | LibraManage</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/forms.css">
+
+    <script src="/js/login.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>LibraManage</h1>
+        <p>Your library, organised.</p>
+
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/catalogue.html">Catalogue</a>
+            <a href="/register.html">Register</a>
+            <a href="/login.html" aria-current="page">My account</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="welcome" aria-labelledby="account-heading">
+            <h2 id="account-heading">My account</h2>
+
+            <p id="account-intro">Checking your sign-in status...</p>
+
+            <form
+                id="login-form"
+                class="account-form"
+                action="/api/auth/login"
+                method="post"
+                hidden
+            >
+                <div class="form-field">
+                    <label for="email">Email address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        autocomplete="username"
+                        maxlength="150"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="current-password"
+                        maxlength="128"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    id="login-button"
+                    class="button-primary"
+                >
+                    Sign in
+                </button>
+
+                <p>
+                    New to LibraManage?
+                    <a href="/register.html">Create an account</a>.
+                </p>
+            </form>
+
+            <div id="account-panel" hidden>
+                <dl id="account-details"></dl>
+
+                <p>
+                    <a href="/catalogue.html">Browse the catalogue</a>
+                </p>
+
+                <button
+                    type="button"
+                    id="logout-button"
+                    class="button-primary"
+                >
+                    Sign out
+                </button>
+            </div>
+
+            <p
+                id="account-message"
+                class="form-message"
+                role="status"
+                tabindex="-1"
+                hidden
+            ></p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 LibraManage</p>
+    </footer>
+</body>
+</html>
