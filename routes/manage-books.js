@@ -1,5 +1,4 @@
 const express = require("express");
-const { randomUUID } = require("node:crypto");
 
 const {
     body,
@@ -7,22 +6,39 @@ const {
     validationResult
 } = require("express-validator");
 
-const pool = require("../config/database");
-
 const {
     requireStaff,
     requireCsrf
 } = require("../middleware/permissions");
 
+const books = require("../services/book-service");
+
 const router = express.Router();
+
+const asyncRoute = (handler) => (req, res, next) => {
+    Promise.resolve(handler(req, res, next)).catch(next);
+};
 
 router.use((req, res, next) => {
     res.set("Cache-Control", "no-store");
     next();
 });
 
-// Every endpoint in this router requires staff access.
 router.use(requireStaff);
+
+router.param("bookId", (req, res, next, value) => {
+    if (
+        !/^[1-9]\d{0,9}$/.test(value) ||
+        Number(value) > 4294967295
+    ) {
+        return res.status(400).json({
+            message: "Choose a valid book."
+        });
+    }
+
+    req.bookId = Number(value);
+    next();
+});
 
 function requireJson(req, res, next) {
     if (!req.is("application/json")) {
@@ -51,7 +67,6 @@ function idRule(field, optional = false) {
         .toInt();
 }
 
-// Save valid ISBN-10 entries in their equivalent ISBN-13 format.
 function toIsbn13(isbn) {
     if (isbn.length === 13) {
         return isbn;
@@ -95,7 +110,6 @@ const bookRules = [
 
     idRule("categoryId"),
     idRule("publisherId", true),
-    idRule("branchId"),
 
     body("authorIds")
         .isArray({ min: 1, max: 10 })
@@ -120,15 +134,6 @@ const bookRules = [
         .bail()
         .toInt(),
 
-    body("initialCopies")
-        .isString()
-        .withMessage("Enter the number of copies.")
-        .bail()
-        .isInt({ min: 1, max: 20 })
-        .withMessage("Add between 1 and 20 copies at a time.")
-        .bail()
-        .toInt(),
-
     body("description")
         .optional({ values: "falsy" })
         .isString()
@@ -139,276 +144,144 @@ const bookRules = [
         .withMessage("Description must not exceed 5,000 characters.")
 ];
 
-function invalidSelection(message) {
-    const error = new Error(message);
-    error.status = 400;
-    return error;
+const creationRules = [
+    idRule("branchId"),
+
+    body("initialCopies")
+        .isString()
+        .withMessage("Enter the number of copies.")
+        .bail()
+        .isInt({ min: 1, max: 20 })
+        .withMessage("Add between 1 and 20 copies at a time.")
+        .bail()
+        .toInt()
+];
+
+function rejectInvalidFields(req, res, next) {
+    const validation = validationResult(req);
+
+    if (!validation.isEmpty()) {
+        return res.status(400).json({
+            message: "Please check the book details.",
+            errors: validation
+                .array({ onlyFirstError: true })
+                .map((error) => ({
+                    field: error.path,
+                    message: error.msg
+                }))
+        });
+    }
+
+    next();
 }
 
-// GET /api/manage/books/options
-router.get("/options", async (req, res, next) => {
-    try {
-        const [
-            [categories],
-            [publishers],
-            [authors],
-            [branches]
-        ] = await Promise.all([
-            pool.execute(`
-                SELECT
-                    category_id AS id,
-                    category_name AS name
-                FROM categories
-                ORDER BY category_name
-            `),
+router.get("/options", asyncRoute(async (req, res) => {
+    res.json(await books.getOptions());
+}));
 
-            pool.execute(`
-                SELECT
-                    publisher_id AS id,
-                    publisher_name AS name
-                FROM publishers
-                ORDER BY publisher_name
-            `),
+router.get("/", asyncRoute(async (req, res) => {
+    const search = req.query.search ?? "";
+    const status = req.query.status ?? "all";
+    const page = req.query.page ?? "1";
 
-            pool.execute(`
-                SELECT
-                    author_id AS id,
-                    CONCAT_WS(' ', first_name, last_name) AS name
-                FROM authors
-                ORDER BY last_name, first_name
-            `),
-
-            pool.execute(`
-                SELECT
-                    branch_id AS id,
-                    branch_name AS name
-                FROM branches
-                WHERE status = 'active'
-                ORDER BY branch_name
-            `)
-        ]);
-
-        res.json({
-            categories,
-            publishers,
-            authors,
-            branches
+    if (
+        typeof search !== "string" ||
+        search.length > 150 ||
+        typeof status !== "string" ||
+        !["all", "active", "inactive"].includes(status) ||
+        typeof page !== "string" ||
+        !/^[1-9]\d{0,8}$/.test(page)
+    ) {
+        return res.status(400).json({
+            message: "Use valid search, status and page values."
         });
-    } catch (error) {
-        next(error);
     }
-});
 
-// POST /api/manage/books
+    res.json(await books.listBooks({
+        search: search.trim(),
+        status,
+        page: Number(page)
+    }));
+}));
+
+router.get("/:bookId", asyncRoute(async (req, res) => {
+    res.json({
+        book: await books.getBook(req.bookId)
+    });
+}));
+
 router.post(
     "/",
     requireJson,
     requireCsrf,
     bookRules,
-    async (req, res, next) => {
-        const validation = validationResult(req);
-
-        if (!validation.isEmpty()) {
-            return res.status(400).json({
-                message: "Please check the book details.",
-                errors: validation
-                    .array({ onlyFirstError: true })
-                    .map((error) => ({
-                        field: error.path,
-                        message: error.msg
-                    }))
-            });
-        }
-
+    creationRules,
+    rejectInvalidFields,
+    asyncRoute(async (req, res) => {
         const values = matchedData(req, {
             locations: ["body"]
         });
 
-        const authorIds = [
-            ...new Set(values.authorIds.map(Number))
-        ];
-
-        let connection;
-        let transactionStarted = false;
-
-        try {
-            connection = await pool.getConnection();
-
-            await connection.beginTransaction();
-            transactionStarted = true;
-
-            // Keep the selected reference records valid during this save.
-            const [branches] = await connection.execute(
-                `
-                    SELECT branch_id
-                    FROM branches
-                    WHERE branch_id = ?
-                        AND status = 'active'
-                    FOR SHARE
-                `,
-                [values.branchId]
-            );
-
-            if (branches.length !== 1) {
-                throw invalidSelection("Choose an active library branch.");
-            }
-
-            const [categories] = await connection.execute(
-                `
-                    SELECT category_id
-                    FROM categories
-                    WHERE category_id = ?
-                    FOR SHARE
-                `,
-                [values.categoryId]
-            );
-
-            if (categories.length !== 1) {
-                throw invalidSelection("Choose a category from the list.");
-            }
-
-            if (values.publisherId) {
-                const [publishers] = await connection.execute(
-                    `
-                        SELECT publisher_id
-                        FROM publishers
-                        WHERE publisher_id = ?
-                        FOR SHARE
-                    `,
-                    [values.publisherId]
-                );
-
-                if (publishers.length !== 1) {
-                    throw invalidSelection(
-                        "Choose a publisher from the list."
-                    );
-                }
-            }
-
-            const authorPlaceholders =
-                authorIds.map(() => "?").join(", ");
-
-            const [authors] = await connection.execute(
-                `
-                    SELECT author_id
-                    FROM authors
-                    WHERE author_id IN (${authorPlaceholders})
-                    FOR SHARE
-                `,
-                authorIds
-            );
-
-            if (authors.length !== authorIds.length) {
-                throw invalidSelection(
-                    "Choose authors from the available list."
-                );
-            }
-
-            const [bookResult] = await connection.execute(
-                `
-                    INSERT INTO books (
-                        publisher_id,
-                        category_id,
-                        isbn,
-                        title,
-                        publication_year,
-                        description
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?)
-                `,
-                [
-                    values.publisherId || null,
-                    values.categoryId,
-                    values.isbn,
-                    values.title,
-                    values.publicationYear || null,
-                    values.description || null
-                ]
-            );
-
-            const bookId = bookResult.insertId;
-
-            const authorRows =
-                authorIds.map(() => "(?, ?)").join(", ");
-
-            await connection.execute(
-                `
-                    INSERT INTO book_authors (book_id, author_id)
-                    VALUES ${authorRows}
-                `,
-                authorIds.flatMap((authorId) => [bookId, authorId])
-            );
-
-            const copyRows = [];
-            const copyParameters = [];
-
-            for (let index = 0; index < values.initialCopies; index++) {
-                copyRows.push("(?, ?, ?, CURRENT_DATE())");
-
-                copyParameters.push(
-                    bookId,
-                    values.branchId,
-                    `LM-${randomUUID()}`
-                );
-            }
-
-            await connection.execute(
-                `
-                    INSERT INTO book_copies (
-                        book_id,
-                        branch_id,
-                        barcode,
-                        acquired_date
-                    )
-                    VALUES ${copyRows.join(", ")}
-                `,
-                copyParameters
-            );
-
-            await connection.commit();
-            transactionStarted = false;
-
-            const ending = values.initialCopies === 1
-                ? "copy"
-                : "copies";
-
-            return res.status(201).json({
-                message:
-                    `Book added with ${values.initialCopies} ${ending}.`,
-                bookId,
-                copyCount: values.initialCopies
-            });
-        } catch (error) {
-            if (connection && transactionStarted) {
-                try {
-                    await connection.rollback();
-                } catch (rollbackError) {
-                    console.error(
-                        "Book rollback failed:",
-                        rollbackError.message
-                    );
-                }
-            }
-
-            if (error.status === 400) {
-                return res.status(400).json({
-                    message: error.message
-                });
-            }
-
-            if (error.code === "ER_DUP_ENTRY") {
-                return res.status(409).json({
-                    message: "A book with this ISBN already exists."
-                });
-            }
-
-            next(error);
-        } finally {
-            if (connection) {
-                connection.release();
-            }
-        }
-    }
+        res.status(201).json(await books.createBook(values));
+    })
 );
+
+router.put(
+    "/:bookId",
+    requireJson,
+    requireCsrf,
+    bookRules,
+    rejectInvalidFields,
+    asyncRoute(async (req, res) => {
+        const values = matchedData(req, {
+            locations: ["body"]
+        });
+
+        res.json(await books.updateBook(req.bookId, values));
+    })
+);
+
+router.patch(
+    "/:bookId/status",
+    requireJson,
+    requireCsrf,
+
+    body("status")
+        .isString()
+        .withMessage("Choose a valid book status.")
+        .bail()
+        .isIn(["active", "inactive"])
+        .withMessage("Choose a valid book status."),
+
+    rejectInvalidFields,
+
+    asyncRoute(async (req, res) => {
+        const { status } = matchedData(req, {
+            locations: ["body"]
+        });
+
+        res.json(await books.setBookStatus(req.bookId, status));
+    })
+);
+
+router.use((error, req, res, next) => {
+    if (res.headersSent) {
+        return next(error);
+    }
+
+    if (error.status) {
+        return res.status(error.status).json({
+            message: error.message
+        });
+    }
+
+    if (error.code === "ER_DUP_ENTRY") {
+        return res.status(409).json({
+            message: "A book with this ISBN already exists."
+        });
+    }
+
+    next(error);
+});
 
 module.exports = router;

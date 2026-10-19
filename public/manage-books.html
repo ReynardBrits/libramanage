@@ -31,7 +31,9 @@
         <section class="welcome" aria-labelledby="manage-heading">
             <h2 id="manage-heading">Add a book</h2>
 
-            <p>Add a title and its first copies to a library branch.</p>
+            <p id="manage-intro">
+                Add a title and its first copies to a library branch.
+            </p>
 
             <p
                 id="manage-message"
@@ -71,7 +73,6 @@
                         id="isbn"
                         name="isbn"
                         maxlength="20"
-                        placeholder="9780137081073"
                         required
                     >
                 </div>
@@ -120,14 +121,14 @@
                     </p>
                 </div>
 
-                <div class="form-field">
+                <div id="branch-field" class="form-field">
                     <label for="branchId">Library branch</label>
                     <select id="branchId" name="branchId" required>
                         <option value="">Choose a branch</option>
                     </select>
                 </div>
 
-                <div class="form-field">
+                <div id="copies-field" class="form-field">
                     <label for="initialCopies">Number of copies</label>
                     <input
                         type="number"
@@ -151,20 +152,114 @@
                     ></textarea>
                 </div>
 
-                <button
-                    type="submit"
-                    id="save-book-button"
-                    class="button-primary wide"
-                >
-                    Add book
-                </button>
+                <div class="manage-actions wide">
+                    <button
+                        type="submit"
+                        id="save-book-button"
+                        class="button-primary"
+                    >
+                        Add book
+                    </button>
+
+                    <button
+                        type="button"
+                        id="cancel-edit-button"
+                        class="button-secondary"
+                        hidden
+                    >
+                        Cancel editing
+                    </button>
+                </div>
             </form>
 
             <p id="created-book-prompt" hidden>
                 <a id="created-book-link" href="/catalogue.html">
-                    View the added book
+                    View in catalogue
                 </a>
             </p>
+        </section>
+
+        <section
+            id="book-list-section"
+            class="catalogue-results"
+            aria-labelledby="book-list-heading"
+            hidden
+        >
+            <h2 id="book-list-heading">Book records</h2>
+
+            <form
+                id="book-filters"
+                class="catalogue-search manage-search"
+                action="/manage-books.html"
+                method="get"
+            >
+                <div class="form-field">
+                    <label for="manage-search-term">Search books</label>
+                    <input
+                        type="search"
+                        id="manage-search-term"
+                        name="search"
+                        maxlength="150"
+                        placeholder="Title, author or ISBN"
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="manage-status">Catalogue status</label>
+                    <select id="manage-status" name="status">
+                        <option value="all">All books</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Archived</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="button-primary">
+                    Search
+                </button>
+            </form>
+
+            <p id="book-list-message" role="status"></p>
+
+            <div class="table-scroll">
+                <table class="book-table">
+                    <caption>Catalogue records and available copies</caption>
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Book</th>
+                            <th scope="col">Authors</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Copies</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="book-table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <button
+                    type="button"
+                    id="previous-page"
+                    class="button-secondary"
+                    disabled
+                >
+                    Previous
+                </button>
+
+                <p id="page-message">Page 1 of 1</p>
+
+                <button
+                    type="button"
+                    id="next-page"
+                    class="button-secondary"
+                    disabled
+                >
+                    Next
+                </button>
+            </div>
         </section>
     </main>
 

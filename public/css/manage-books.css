@@ -23,13 +23,106 @@
     resize: vertical;
 }
 
-.manage-form textarea:focus-visible {
+.manage-form textarea:focus-visible,
+.button-secondary:focus-visible {
     outline: 3px solid #0e7490;
     outline-offset: 2px;
 }
 
+.manage-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.button-secondary {
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    border: 1px solid #163a63;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #163a63;
+    font: inherit;
+    cursor: pointer;
+}
+
+.button-secondary:hover {
+    background-color: #e8eff7;
+}
+
+.button-secondary:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.form-message[data-state="info"] {
+    color: #0c4a6e;
+    background-color: #e0f2fe;
+}
+
+.catalogue-search.manage-search {
+    grid-template-columns: 2fr 1fr auto;
+    margin-bottom: 1rem;
+}
+
+.table-scroll {
+    overflow-x: auto;
+    border: 1px solid #dbe3ed;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+.book-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.book-table th,
+.book-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #dbe3ed;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+}
+
+.book-table thead th {
+    background-color: #163a63;
+    color: #ffffff;
+}
+
+.book-table caption {
+    padding: 0.75rem;
+    color: #475569;
+    text-align: left;
+}
+
+.book-table .book-isbn {
+    margin: 0.4rem 0 0;
+    color: #475569;
+    font-weight: normal;
+}
+
+.book-table .manage-actions {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
 @media (max-width: 650px) {
-    .manage-form {
+    .manage-form,
+    .catalogue-search.manage-search {
         grid-template-columns: 1fr;
     }
 }
