@@ -1,0 +1,134 @@
+.loans-section {
+    margin-top: 2rem;
+}
+
+.account-form.loan-form {
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.loan-form .wide {
+    grid-column: 1 / -1;
+}
+
+.loan-search-button {
+    align-self: end;
+}
+
+.button-secondary {
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    border: 1px solid #163a63;
+    border-radius: 6px;
+    background: #fff;
+    color: #163a63;
+    font: inherit;
+    cursor: pointer;
+}
+
+.button-secondary:hover {
+    background: #e8f0f8;
+}
+
+.button-secondary:focus-visible {
+    outline: 3px solid #127e91;
+    outline-offset: 3px;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.loan-filters {
+    display: grid;
+    grid-template-columns: 2fr 1fr auto;
+    align-items: end;
+    gap: 1rem;
+    margin: 1.5rem 0 1rem;
+}
+
+.welcome .loan-feedback {
+    margin: 0.65rem 0;
+    overflow-wrap: anywhere;
+}
+
+.loan-feedback[data-state="error"] {
+    color: #a61b1b;
+}
+
+.table-scroll {
+    overflow-x: auto;
+    border: 1px solid #dbe3ec;
+    border-radius: 8px;
+}
+
+.loan-table {
+    width: 100%;
+    min-width: 980px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.loan-table th,
+.loan-table td {
+    padding: 0.8rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid #dbe3ec;
+    overflow-wrap: anywhere;
+}
+
+.loan-table thead {
+    background: #163a63;
+    color: #fff;
+}
+
+.loan-table caption {
+    padding: 0.8rem;
+    text-align: left;
+    color: #475569;
+}
+
+.loan-table .subtle {
+    margin: 0.35rem 0 0;
+    color: #475569;
+    font-size: 0.85rem;
+    font-weight: normal;
+}
+
+.loan-status {
+    font-weight: bold;
+}
+
+.loan-status[data-status="active"] {
+    color: #163a63;
+}
+
+.loan-status[data-status="overdue"] {
+    color: #a61b1b;
+}
+
+.loan-status[data-status="returned"] {
+    color: #176437;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 650px) {
+
+    .account-form.loan-form,
+    .loan-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+    }
+}

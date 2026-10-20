@@ -11,23 +11,36 @@ async function addStaffNavigation() {
 
         const data = await response.json();
 
-        if (
-            !["admin", "librarian"].includes(data.user?.roleName)
-        ) {
+        if (!["admin", "librarian"].includes(data.user?.roleName)) {
             return;
         }
 
-        const navigation = document.querySelector(".site-nav");
-        const link = document.createElement("a");
+        const navigation = document.querySelector("header nav");
 
-        link.href = "/manage-books.html";
-        link.textContent = "Manage books";
+        if (!navigation) {
+            return;
+        }
 
-        navigation.append(link);
+        const staffLinks = [
+            ["Manage books", "/manage-books.html"],
+            ["Manage loans", "/manage-loans.html"]
+        ];
+
+        for (const [label, href] of staffLinks) {
+            if (navigation.querySelector(`a[href="${href}"]`)) {
+                continue;
+            }
+
+            const link = document.createElement("a");
+            link.href = href;
+            link.textContent = label;
+
+            navigation.append(link);
+        }
     } catch (error) {
         console.error(
-            "Could not load account navigation:",
-            error.message
+            "Staff navigation could not be loaded:",
+            error
         );
     }
 }

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Loans | LibraManage</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/manage-loans.css">
+
+    <script src="/js/manage-loans.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>LibraManage</h1>
+
+        <nav aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/catalogue.html">Catalogue</a>
+            <a href="/login.html">My account</a>
+            <a href="/manage-books.html">Manage books</a>
+
+            <a href="/manage-loans.html" aria-current="page">
+                Manage loans
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="welcome" aria-labelledby="page-heading">
+            <h2 id="page-heading">Issue and return books</h2>
+
+            <p>
+                Staff can issue available copies and record returns here.
+            </p>
+
+            <p id="page-message" class="form-message" role="status" tabindex="-1" data-state="loading">
+                Checking staff access...
+            </p>
+
+            <p id="sign-in-prompt" hidden>
+                <a href="/login.html">
+                    Sign in to your staff account
+                </a>
+            </p>
+        </section>
+
+        <div id="staff-workspace" hidden>
+            <section class="welcome loans-section" aria-labelledby="issue-heading">
+                <h2 id="issue-heading">Issue a book</h2>
+
+                <p id="policy-summary"></p>
+
+                <form id="issue-form" class="account-form loan-form" action="/api/manage/loans" method="post">
+                    <div class="form-field">
+                        <label for="member-number">
+                            Member number
+                        </label>
+
+                        <input id="member-number" name="memberNumber" type="text" maxlength="30" placeholder="LM-000001"
+                            required autocomplete="off" aria-describedby="member-help">
+
+                        <p id="member-help" class="form-help">
+                            Find this number on the member's My account page.
+                        </p>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="copy-branch">
+                            Branch
+                        </label>
+
+                        <select id="copy-branch" name="branchId">
+                            <option value="">All branches</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="copy-search">
+                            Search available copies
+                        </label>
+
+                        <input id="copy-search" name="bookSearch" type="search" maxlength="150"
+                            placeholder="Title, ISBN, or barcode">
+                    </div>
+
+                    <div class="loan-search-button">
+                        <button id="find-copies" class="button-secondary" type="button">
+                            Find copies
+                        </button>
+                    </div>
+
+                    <div class="form-field wide">
+                        <label for="copy-id">
+                            Physical copy
+                        </label>
+
+                        <select id="copy-id" name="copyId" required aria-describedby="copy-message">
+                            <option value="">
+                                Choose an available copy
+                            </option>
+                        </select>
+
+                        <p id="copy-message" class="loan-feedback" role="status"></p>
+                    </div>
+
+                    <button class="button-primary" type="submit">
+                        Issue book
+                    </button>
+                </form>
+            </section>
+
+            <section class="welcome loans-section" aria-labelledby="records-heading">
+                <h2 id="records-heading">Loan records</h2>
+
+                <form id="loan-filters" class="loan-filters" action="/manage-loans.html" method="get">
+                    <div class="form-field">
+                        <label for="loan-search">
+                            Search loans
+                        </label>
+
+                        <input id="loan-search" name="search" type="search" maxlength="150"
+                            placeholder="Book, barcode, member number, or name">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="loan-status">
+                            Show
+                        </label>
+
+                        <select id="loan-status" name="status">
+                            <option value="open">Open loans</option>
+                            <option value="overdue">Overdue loans</option>
+                            <option value="returned">Returned loans</option>
+                            <option value="all">All loans</option>
+                        </select>
+                    </div>
+
+                    <button class="button-primary" type="submit">
+                        Search
+                    </button>
+                </form>
+
+                <p id="list-message" class="loan-feedback" role="status"></p>
+
+                <div class="table-scroll">
+                    <table class="loan-table">
+                        <caption>
+                            Loan history and return actions
+                        </caption>
+
+                        <thead>
+                            <tr>
+                                <th scope="col">Book and copy</th>
+                                <th scope="col">Member</th>
+                                <th scope="col">Issued</th>
+                                <th scope="col">Due</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Fine</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="loan-table-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button id="previous-page" class="button-secondary" type="button" disabled>
+                        Previous
+                    </button>
+
+                    <p id="page-number">Page 1 of 1</p>
+
+                    <button id="next-page" class="button-secondary" type="button" disabled>
+                        Next
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 LibraManage</p>
+    </footer>
+</body>
+
+</html>

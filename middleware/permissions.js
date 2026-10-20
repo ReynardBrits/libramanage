@@ -1,34 +1,31 @@
 const { timingSafeEqual } = require("node:crypto");
+
 const pool = require("../config/database");
 
-// Check the user's current role in MySQL.
 async function requireStaff(req, res, next) {
     const userId = req.session?.userId;
 
     if (!Number.isInteger(userId)) {
         return res.status(401).json({
             code: "SIGN_IN_REQUIRED",
-            message: "Please sign in to manage books."
+            message: "Please sign in to manage library records."
         });
     }
 
     try {
-        const [users] = await pool.execute(
-            `
-                SELECT r.role_name AS roleName
-                FROM users AS u
-                INNER JOIN roles AS r
-                    ON r.role_id = u.role_id
-                WHERE u.user_id = ?
-                    AND u.status = 'active'
-            `,
-            [userId]
-        );
+        const [users] = await pool.execute(`
+      SELECT r.role_name AS roleName
+      FROM users AS u
+      INNER JOIN roles AS r
+        ON r.role_id = u.role_id
+      WHERE u.user_id = ?
+        AND u.status = 'active'
+    `, [userId]);
 
-        if (users.length === 0) {
+        if (!users.length) {
             return res.status(401).json({
                 code: "SIGN_IN_REQUIRED",
-                message: "Please sign in to manage books."
+                message: "Please sign in to manage library records."
             });
         }
 
@@ -36,7 +33,7 @@ async function requireStaff(req, res, next) {
             return res.status(403).json({
                 code: "FORBIDDEN",
                 message:
-                    "Only administrators and librarians can manage books."
+                    "Only administrators and librarians can manage library records."
             });
         }
 
@@ -51,17 +48,16 @@ async function requireStaff(req, res, next) {
     }
 }
 
-// Protect requests that change data.
 function requireCsrf(req, res, next) {
     const expected = req.session?.csrfToken;
     const submitted = req.get("X-CSRF-Token");
 
     if (
-        typeof expected !== "string" ||
-        typeof submitted !== "string" ||
-        !/^[0-9a-f]{64}$/.test(expected) ||
-        !/^[0-9a-f]{64}$/.test(submitted) ||
-        !timingSafeEqual(
+        typeof expected !== "string"
+        || typeof submitted !== "string"
+        || !/^[0-9a-f]{64}$/.test(expected)
+        || !/^[0-9a-f]{64}$/.test(submitted)
+        || !timingSafeEqual(
             Buffer.from(expected),
             Buffer.from(submitted)
         )
