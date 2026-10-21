@@ -1,0 +1,196 @@
+[hidden] {
+    display: none !important;
+}
+
+.borrowing-panel {
+    margin-top: 2rem;
+}
+
+#account-panel {
+    margin-top: 1.5rem;
+}
+
+.account-details {
+    display: grid;
+    gap: 1rem;
+    margin: 1.25rem 0;
+}
+
+.account-details div {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 1rem;
+}
+
+.account-details dt {
+    font-weight: bold;
+    color: #163a63;
+}
+
+.account-details dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.button-secondary {
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    border: 1px solid #163a63;
+    border-radius: 6px;
+    background: #fff;
+    color: #163a63;
+    font: inherit;
+    cursor: pointer;
+}
+
+.button-secondary:hover {
+    background: #e8f0f8;
+}
+
+.button-secondary:focus-visible {
+    outline: 3px solid #127e91;
+    outline-offset: 3px;
+}
+
+.button-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.account-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.account-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.summary-card {
+    padding: 1rem;
+    border: 1px solid #dbe3ec;
+    border-radius: 8px;
+    background: #f1f5f9;
+}
+
+.summary-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: #163a63;
+}
+
+.welcome .summary-card p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #163a63;
+    overflow-wrap: anywhere;
+}
+
+.welcome .account-note {
+    margin-bottom: 1.5rem;
+}
+
+.account-filter {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+}
+
+.account-filter .form-field {
+    min-width: 180px;
+}
+
+.account-table-scroll {
+    overflow-x: auto;
+    border: 1px solid #dbe3ec;
+    border-radius: 8px;
+}
+
+.account-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.account-table th,
+.account-table td {
+    padding: 0.8rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid #dbe3ec;
+    overflow-wrap: anywhere;
+}
+
+.account-table thead {
+    background: #163a63;
+    color: #fff;
+}
+
+.account-table caption {
+    padding: 0.8rem;
+    text-align: left;
+    color: #475569;
+}
+
+.account-table .account-subtle {
+    margin: 0.35rem 0 0;
+    color: #475569;
+    font-size: 0.85rem;
+    font-weight: normal;
+}
+
+.account-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.fines-heading {
+    margin-top: 2rem;
+}
+
+.account-status {
+    font-weight: bold;
+}
+
+.account-status[data-status="overdue"],
+.account-status[data-status="unpaid"] {
+    color: #a61b1b;
+}
+
+.account-status[data-status="returned"],
+.account-status[data-status="paid"] {
+    color: #176437;
+}
+
+.account-status[data-status="partially_paid"] {
+    color: #8a4b00;
+}
+
+.welcome .form-message[data-state="info"] {
+    background: #e8f0f8;
+    color: #163a63;
+}
+
+@media (max-width: 650px) {
+    .account-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .account-details div {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
+}

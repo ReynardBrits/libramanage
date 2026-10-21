@@ -18,6 +18,7 @@ const catalogueRouter = require("./routes/catalogue");
 const authRouter = require("./routes/auth");
 const manageBooksRouter = require("./routes/manage-books");
 const manageLoansRouter = require("./routes/manage-loans");
+const myBorrowingRouter = require("./routes/my-borrowing");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -61,6 +62,7 @@ app.use("/api/books", catalogueRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/manage/books", manageBooksRouter);
 app.use("/api/manage/loans", manageLoansRouter);
+app.use("/api/my-borrowing", myBorrowingRouter);
 
 app.use("/api", (req, res) => {
     res.status(404).json({
