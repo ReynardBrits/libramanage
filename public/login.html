@@ -8,26 +8,20 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/forms.css">
     <link rel="stylesheet" href="/css/account.css">
+    <script src="/js/ui-helpers.js" defer></script>
     <script src="/js/login.js" defer></script>
 </head>
 
 <body>
     <header class="site-header">
         <h1>LibraManage</h1>
-
         <nav class="site-nav" aria-label="Main navigation">
             <a href="/">Home</a>
             <a href="/catalogue.html">Catalogue</a>
             <a href="/register.html">Register</a>
             <a href="/login.html" aria-current="page">My account</a>
-
-            <a id="staff-books-link" href="/manage-books.html" hidden>
-                Manage books
-            </a>
-
-            <a id="staff-loans-link" href="/manage-loans.html" hidden>
-                Manage loans
-            </a>
+            <a id="staff-books-link" href="/manage-books.html" hidden>Manage books</a>
+            <a id="staff-loans-link" href="/manage-loans.html" hidden>Manage loans</a>
         </nav>
     </header>
 
@@ -35,78 +29,56 @@
         <section class="welcome" aria-labelledby="account-heading">
             <h2 id="account-heading">My account</h2>
             <p>Sign in to view your membership, loans, and fines.</p>
-
-            <p id="account-message" class="form-message" role="status" tabindex="-1" data-state="loading">
-                Checking your session...
-            </p>
+            <p id="account-message" class="form-message" role="status" tabindex="-1" data-state="loading">Checking your
+                session...</p>
 
             <form id="login-form" class="account-form" action="/api/auth/login" method="post" hidden>
                 <div class="form-field">
                     <label for="login-email">Email address</label>
                     <input id="login-email" name="email" type="email" maxlength="150" autocomplete="username" required>
                 </div>
-
                 <div class="form-field">
                     <label for="login-password">Password</label>
                     <input id="login-password" name="password" type="password" maxlength="128"
                         autocomplete="current-password" required>
                 </div>
-
-                <button class="button-primary" type="submit">
-                    Sign in
-                </button>
-
-                <p>
-                    Need a membership?
-                    <a href="/register.html">Create an account</a>.
-                </p>
+                <button class="button-primary" type="submit">Sign in</button>
+                <p>Need a membership? <a href="/register.html">Create an account</a>.</p>
             </form>
 
             <div id="account-panel" hidden>
                 <h3 id="profile-heading">Membership details</h3>
-
                 <dl class="account-details">
                     <div>
                         <dt>Name</dt>
                         <dd id="profile-name"></dd>
                     </div>
-
                     <div>
                         <dt>Email</dt>
                         <dd id="profile-email"></dd>
                     </div>
-
                     <div>
                         <dt>Role</dt>
                         <dd id="profile-role"></dd>
                     </div>
-
                     <div>
                         <dt>Member number</dt>
                         <dd id="profile-number"></dd>
                     </div>
-
                     <div>
                         <dt>Borrowing status</dt>
                         <dd id="profile-status"></dd>
                     </div>
                 </dl>
-
-                <button id="logout-button" class="button-secondary" type="button">
-                    Sign out
-                </button>
+                <button id="logout-button" class="button-secondary" type="button">Sign out</button>
             </div>
         </section>
 
         <section id="borrowing-panel" class="welcome borrowing-panel" aria-labelledby="borrowing-heading" hidden>
             <div class="account-section-heading">
                 <h2 id="borrowing-heading">My loans and fines</h2>
-
-                <button id="reload-borrowing" class="button-secondary" type="button">
-                    Refresh records
-                </button>
+                <button id="reload-borrowing" class="button-secondary" type="button">Refresh records</button>
             </div>
-
             <p id="borrowing-message" class="form-message" role="status"></p>
 
             <div id="borrowing-content" hidden>
@@ -115,12 +87,10 @@
                         <h3>Open loans</h3>
                         <p id="open-count">—</p>
                     </article>
-
                     <article class="summary-card">
                         <h3>Overdue loans</h3>
                         <p id="overdue-count">—</p>
                     </article>
-
                     <article class="summary-card">
                         <h3>Outstanding fines</h3>
                         <p id="outstanding-balance">—</p>
@@ -133,11 +103,9 @@
                 </p>
 
                 <h3>Borrowing history</h3>
-
                 <form id="loan-filter-form" class="account-filter" action="/login.html" method="get">
                     <div class="form-field">
                         <label for="my-loan-status">Show loans</label>
-
                         <select id="my-loan-status" name="loanStatus">
                             <option value="all">All loans</option>
                             <option value="open">Open loans</option>
@@ -145,18 +113,12 @@
                             <option value="returned">Returned loans</option>
                         </select>
                     </div>
-
-                    <button class="button-primary" type="submit">
-                        Show
-                    </button>
+                    <button class="button-primary" type="submit">Show</button>
                 </form>
 
                 <div class="account-table-scroll">
                     <table class="account-table">
-                        <caption>
-                            Your borrowing history. Dates use South African time.
-                        </caption>
-
+                        <caption>Your borrowing history. Dates use South African time.</caption>
                         <thead>
                             <tr>
                                 <th scope="col">Book and copy</th>
@@ -167,29 +129,20 @@
                                 <th scope="col">Fine</th>
                             </tr>
                         </thead>
-
                         <tbody id="my-loan-rows"></tbody>
                     </table>
                 </div>
 
                 <div class="account-pagination">
-                    <button id="loans-previous" class="button-secondary" type="button">
-                        Previous loans
-                    </button>
-
+                    <button id="loans-previous" class="button-secondary" type="button">Previous loans</button>
                     <p id="loans-page" role="status"></p>
-
-                    <button id="loans-next" class="button-secondary" type="button">
-                        Next loans
-                    </button>
+                    <button id="loans-next" class="button-secondary" type="button">Next loans</button>
                 </div>
 
                 <h3 class="fines-heading">Fine history</h3>
-
                 <div class="account-table-scroll">
                     <table class="account-table">
                         <caption>Your recorded fines and payment balances.</caption>
-
                         <thead>
                             <tr>
                                 <th scope="col">Book</th>
@@ -200,21 +153,14 @@
                                 <th scope="col">Status</th>
                             </tr>
                         </thead>
-
                         <tbody id="my-fine-rows"></tbody>
                     </table>
                 </div>
 
                 <div class="account-pagination">
-                    <button id="fines-previous" class="button-secondary" type="button">
-                        Previous fines
-                    </button>
-
+                    <button id="fines-previous" class="button-secondary" type="button">Previous fines</button>
                     <p id="fines-page" role="status"></p>
-
-                    <button id="fines-next" class="button-secondary" type="button">
-                        Next fines
-                    </button>
+                    <button id="fines-next" class="button-secondary" type="button">Next fines</button>
                 </div>
             </div>
         </section>

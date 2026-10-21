@@ -7,40 +7,31 @@
     <title>Manage Payments | LibraManage</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/manage-payments.css">
+    <script src="/js/ui-helpers.js" defer></script>
     <script src="/js/manage-payments.js" defer></script>
 </head>
 
 <body>
     <header class="site-header">
         <h1>LibraManage</h1>
-
         <nav class="site-nav" aria-label="Main navigation">
             <a href="/">Home</a>
             <a href="/catalogue.html">Catalogue</a>
             <a href="/login.html">My account</a>
             <a href="/manage-books.html">Manage books</a>
             <a href="/manage-loans.html">Manage loans</a>
-            <a href="/manage-payments.html" aria-current="page">
-                Manage payments
-            </a>
+            <a href="/manage-payments.html" aria-current="page">Manage payments</a>
         </nav>
     </header>
 
     <main>
         <section class="welcome" aria-labelledby="page-heading">
             <h2 id="page-heading">Manage fine payments</h2>
-            <p>
-                Find a member's fine, record a payment, and view its payment history.
-            </p>
-
-            <p id="page-message" class="payment-feedback" role="status" tabindex="-1">
-                Checking staff access...
-            </p>
-
+            <p>Find a member's fine, record a payment, and view its payment history.</p>
+            <p id="page-message" class="payment-feedback" role="status" tabindex="-1">Checking staff access...</p>
             <p id="sign-in-prompt" hidden>
                 <a href="/login.html">Sign in to your staff account</a>
             </p>
-
             <noscript>
                 <p>Enable JavaScript to manage payments.</p>
             </noscript>
@@ -49,14 +40,12 @@
         <div id="staff-workspace" hidden>
             <section class="welcome payment-section" aria-labelledby="fines-heading">
                 <h2 id="fines-heading">Fine records</h2>
-
                 <form id="fine-filters" class="payment-filters" action="/manage-payments.html" method="get">
                     <div class="form-field">
                         <label for="fine-search">Search fines</label>
                         <input id="fine-search" name="search" type="search" maxlength="150"
                             placeholder="Member number, name, book, or barcode">
                     </div>
-
                     <div class="form-field">
                         <label for="fine-status">Show</label>
                         <select id="fine-status" name="status">
@@ -65,10 +54,7 @@
                             <option value="all">All fines</option>
                         </select>
                     </div>
-
-                    <button class="button-primary" type="submit">
-                        Search
-                    </button>
+                    <button class="button-primary" type="submit">Search</button>
                 </form>
 
                 <p id="list-message" class="payment-feedback" role="status"></p>
@@ -92,25 +78,16 @@
                 </div>
 
                 <div class="payment-pagination">
-                    <button id="previous-page" class="button-secondary" type="button" disabled>
-                        Previous
-                    </button>
-
+                    <button id="previous-page" class="button-secondary" type="button" disabled>Previous</button>
                     <p id="page-number">Page 1 of 1</p>
-
-                    <button id="next-page" class="button-secondary" type="button" disabled>
-                        Next
-                    </button>
+                    <button id="next-page" class="button-secondary" type="button" disabled>Next</button>
                 </div>
             </section>
 
             <section id="fine-panel" class="welcome payment-section" aria-labelledby="selected-heading" hidden>
                 <div class="payment-heading">
                     <h2 id="selected-heading" tabindex="-1">Selected fine</h2>
-
-                    <button id="refresh-fine" class="button-secondary" type="button">
-                        Refresh fine
-                    </button>
+                    <button id="refresh-fine" class="button-secondary" type="button">Refresh fine</button>
                 </div>
 
                 <p id="fine-description"></p>
@@ -120,12 +97,10 @@
                         <dt>Fine charged</dt>
                         <dd id="fine-charged"></dd>
                     </div>
-
                     <div>
                         <dt>Total paid</dt>
                         <dd id="fine-paid"></dd>
                     </div>
-
                     <div>
                         <dt>Outstanding</dt>
                         <dd id="fine-balance"></dd>
@@ -144,23 +119,16 @@
                             Enter an amount using a decimal point, for example 2.00.
                         </p>
                     </div>
-
-                    <button id="record-payment" class="button-primary" type="submit">
-                        Record payment
-                    </button>
+                    <button id="record-payment" class="button-primary" type="submit">Record payment</button>
                 </form>
 
                 <p id="pending-message" class="payment-feedback" role="status" hidden></p>
-
                 <p id="receipt" class="payment-receipt" role="status" tabindex="-1" hidden></p>
 
                 <h3>Payment history</h3>
-
                 <div class="payment-scroll" role="region" aria-label="Payment history" tabindex="0">
                     <table class="payment-table history-table">
-                        <caption>
-                            Payments recorded for this fine; times shown in South Africa
-                        </caption>
+                        <caption>Payments recorded for this fine; times shown in South Africa</caption>
                         <thead>
                             <tr>
                                 <th scope="col">Receipt</th>
@@ -174,15 +142,9 @@
                 </div>
 
                 <div class="payment-pagination">
-                    <button id="previous-payment-page" class="button-secondary" type="button" disabled>
-                        Previous
-                    </button>
-
+                    <button id="previous-payment-page" class="button-secondary" type="button" disabled>Previous</button>
                     <p id="payment-page-number">Page 1 of 1</p>
-
-                    <button id="next-payment-page" class="button-secondary" type="button" disabled>
-                        Next
-                    </button>
+                    <button id="next-payment-page" class="button-secondary" type="button" disabled>Next</button>
                 </div>
             </section>
         </div>
