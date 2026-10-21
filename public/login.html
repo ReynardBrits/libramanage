@@ -3,23 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>My Account | LibraManage</title>
-
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/forms.css">
     <link rel="stylesheet" href="/css/account.css">
-
     <script src="/js/login.js" defer></script>
 </head>
 
 <body>
-    <header>
+    <header class="site-header">
         <h1>LibraManage</h1>
 
-        <nav aria-label="Main navigation">
+        <nav class="site-nav" aria-label="Main navigation">
             <a href="/">Home</a>
             <a href="/catalogue.html">Catalogue</a>
             <a href="/register.html">Register</a>
@@ -38,10 +34,7 @@
     <main>
         <section class="welcome" aria-labelledby="account-heading">
             <h2 id="account-heading">My account</h2>
-
-            <p>
-                Sign in to view your membership, loans, and fines.
-            </p>
+            <p>Sign in to view your membership, loans, and fines.</p>
 
             <p id="account-message" class="form-message" role="status" tabindex="-1" data-state="loading">
                 Checking your session...
@@ -50,13 +43,11 @@
             <form id="login-form" class="account-form" action="/api/auth/login" method="post" hidden>
                 <div class="form-field">
                     <label for="login-email">Email address</label>
-
                     <input id="login-email" name="email" type="email" maxlength="150" autocomplete="username" required>
                 </div>
 
                 <div class="form-field">
                     <label for="login-password">Password</label>
-
                     <input id="login-password" name="password" type="password" maxlength="128"
                         autocomplete="current-password" required>
                 </div>
@@ -137,9 +128,8 @@
                 </div>
 
                 <p class="account-note">
-                    Outstanding fines are charges recorded after a book
-                    is returned. Open overdue loans show estimated charges
-                    in the loan list.
+                    Outstanding fines are charges recorded after a book is returned.
+                    Open overdue loans show estimated charges in the loan list.
                 </p>
 
                 <h3>Borrowing history</h3>
@@ -198,9 +188,7 @@
 
                 <div class="account-table-scroll">
                     <table class="account-table">
-                        <caption>
-                            Your recorded fines and payment balances.
-                        </caption>
+                        <caption>Your recorded fines and payment balances.</caption>
 
                         <thead>
                             <tr>
@@ -232,7 +220,7 @@
         </section>
     </main>
 
-    <footer>
+    <footer class="site-footer">
         <p>&copy; 2026 LibraManage</p>
     </footer>
 </body>
