@@ -6,7 +6,6 @@ require("dotenv").config({
 
 const express = require("express");
 const helmet = require("helmet");
-
 const pool = require("./config/database");
 
 const {
@@ -19,20 +18,24 @@ const authRouter = require("./routes/auth");
 const manageBooksRouter = require("./routes/manage-books");
 const manageLoansRouter = require("./routes/manage-loans");
 const myBorrowingRouter = require("./routes/my-borrowing");
+const managePaymentsRouter = require("./routes/manage-payments");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 
 app.disable("x-powered-by");
 
-app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            "upgrade-insecure-requests":
-                process.env.NODE_ENV === "production" ? [] : null
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                "upgrade-insecure-requests": process.env.NODE_ENV === "production"
+                    ? []
+                    : null
+            }
         }
-    }
-}));
+    })
+);
 
 app.use("/api", express.json({
     limit: "32kb"
@@ -63,6 +66,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/manage/books", manageBooksRouter);
 app.use("/api/manage/loans", manageLoansRouter);
 app.use("/api/my-borrowing", myBorrowingRouter);
+app.use("/api/manage/payments", managePaymentsRouter);
 
 app.use("/api", (req, res) => {
     res.status(404).json({
@@ -70,9 +74,7 @@ app.use("/api", (req, res) => {
     });
 });
 
-app.use(express.static(
-    path.join(__dirname, "public")
-));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use((error, req, res, next) => {
     if (res.headersSent) {
@@ -108,10 +110,12 @@ async function startServer() {
         console.log("Session storage is ready.");
 
         const server = app.listen(PORT, () => {
-            console.log(`LibraManage is running at http://localhost:${PORT}`);
+            console.log(
+                `LibraManage is running at http://localhost:${PORT}`
+            );
         });
 
-        server.on("error", error => {
+        server.on("error", (error) => {
             console.error("Server error:", error.message);
             process.exit(1);
         });
