@@ -21,12 +21,13 @@ async function addStaffNavigation() {
             return;
         }
 
-        const staffLinks = [
+        const links = [
             ["Manage books", "/manage-books.html"],
-            ["Manage loans", "/manage-loans.html"]
+            ["Manage loans", "/manage-loans.html"],
+            ["Manage payments", "/manage-payments.html"]
         ];
 
-        for (const [label, href] of staffLinks) {
+        for (const [label, href] of links) {
             if (navigation.querySelector(`a[href="${href}"]`)) {
                 continue;
             }
@@ -38,10 +39,7 @@ async function addStaffNavigation() {
             navigation.append(link);
         }
     } catch (error) {
-        console.error(
-            "Staff navigation could not be loaded:",
-            error
-        );
+        console.error("Staff navigation could not be loaded:", error);
     }
 }
 
