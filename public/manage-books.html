@@ -1,209 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Manage books | LibraManage</title>
-
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/forms.css">
     <link rel="stylesheet" href="/css/manage-books.css">
-
+    <script src="/js/ui-helpers.js" defer></script>
     <script src="/js/manage-books.js" defer></script>
 </head>
+
 <body>
     <header class="site-header">
         <h1>LibraManage</h1>
         <p>Your library, organised.</p>
-
         <nav class="site-nav" aria-label="Main navigation">
             <a href="/">Home</a>
             <a href="/catalogue.html">Catalogue</a>
             <a href="/login.html">My account</a>
-            <a href="/manage-books.html" aria-current="page">
-                Manage books
-            </a>
+            <a href="/manage-books.html" aria-current="page">Manage books</a>
         </nav>
     </header>
 
     <main>
         <section class="welcome" aria-labelledby="manage-heading">
             <h2 id="manage-heading">Add a book</h2>
-
-            <p id="manage-intro">
-                Add a title and its first copies to a library branch.
-            </p>
-
-            <p
-                id="manage-message"
-                class="form-message"
-                role="status"
-                tabindex="-1"
-            >
-                Checking access...
-            </p>
-
+            <p id="manage-intro">Add a title and its first copies to a library branch.</p>
+            <p id="manage-message" class="form-message" role="status" tabindex="-1">Checking access...</p>
             <p id="sign-in-prompt" hidden>
                 <a href="/login.html">Sign in to your account</a>
             </p>
 
-            <form
-                id="book-form"
-                class="account-form manage-form"
-                action="/api/manage/books"
-                method="post"
-                hidden
-            >
+            <form id="book-form" class="account-form manage-form" action="/api/manage/books" method="post" hidden>
                 <div class="form-field wide">
                     <label for="title">Book title</label>
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        maxlength="255"
-                        required
-                    >
+                    <input type="text" id="title" name="title" maxlength="255" required>
                 </div>
-
                 <div class="form-field">
                     <label for="isbn">ISBN</label>
-                    <input
-                        type="text"
-                        id="isbn"
-                        name="isbn"
-                        maxlength="20"
-                        required
-                    >
+                    <input type="text" id="isbn" name="isbn" maxlength="20" required>
                 </div>
-
                 <div class="form-field">
-                    <label for="publicationYear">
-                        Publication year (optional)
-                    </label>
-                    <input
-                        type="number"
-                        id="publicationYear"
-                        name="publicationYear"
-                        min="1"
-                        step="1"
-                    >
+                    <label for="publicationYear">Publication year (optional)</label>
+                    <input type="number" id="publicationYear" name="publicationYear" min="1" step="1">
                 </div>
-
                 <div class="form-field">
                     <label for="categoryId">Category</label>
                     <select id="categoryId" name="categoryId" required>
                         <option value="">Choose a category</option>
                     </select>
                 </div>
-
                 <div class="form-field">
                     <label for="publisherId">Publisher (optional)</label>
                     <select id="publisherId" name="publisherId">
                         <option value="">Not recorded</option>
                     </select>
                 </div>
-
                 <div class="form-field wide">
                     <label for="authorIds">Authors</label>
-                    <select
-                        id="authorIds"
-                        name="authorIds"
-                        multiple
-                        size="4"
-                        aria-describedby="authors-help"
-                        required
-                    ></select>
-
+                    <select id="authorIds" name="authorIds" multiple size="4" aria-describedby="authors-help"
+                        required></select>
                     <p id="authors-help" class="form-help">
                         Select one or more authors. Hold Ctrl on Windows
                         or Command on Mac to select multiple authors.
                     </p>
                 </div>
-
                 <div id="branch-field" class="form-field">
                     <label for="branchId">Library branch</label>
                     <select id="branchId" name="branchId" required>
                         <option value="">Choose a branch</option>
                     </select>
                 </div>
-
                 <div id="copies-field" class="form-field">
                     <label for="initialCopies">Number of copies</label>
-                    <input
-                        type="number"
-                        id="initialCopies"
-                        name="initialCopies"
-                        min="1"
-                        max="20"
-                        step="1"
-                        value="1"
-                        required
-                    >
+                    <input type="number" id="initialCopies" name="initialCopies" min="1" max="20" step="1" value="1"
+                        required>
                 </div>
-
                 <div class="form-field wide">
                     <label for="description">Description (optional)</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        maxlength="5000"
-                        rows="5"
-                    ></textarea>
+                    <textarea id="description" name="description" maxlength="5000" rows="5"></textarea>
                 </div>
-
                 <div class="manage-actions wide">
-                    <button
-                        type="submit"
-                        id="save-book-button"
-                        class="button-primary"
-                    >
-                        Add book
-                    </button>
-
-                    <button
-                        type="button"
-                        id="cancel-edit-button"
-                        class="button-secondary"
-                        hidden
-                    >
-                        Cancel editing
-                    </button>
+                    <button type="submit" id="save-book-button" class="button-primary">Add book</button>
+                    <button type="button" id="cancel-edit-button" class="button-secondary" hidden>Cancel
+                        editing</button>
                 </div>
             </form>
 
             <p id="created-book-prompt" hidden>
-                <a id="created-book-link" href="/catalogue.html">
-                    View in catalogue
-                </a>
+                <a id="created-book-link" href="/catalogue.html">View in catalogue</a>
             </p>
         </section>
 
-        <section
-            id="book-list-section"
-            class="catalogue-results"
-            aria-labelledby="book-list-heading"
-            hidden
-        >
+        <section id="book-list-section" class="catalogue-results" aria-labelledby="book-list-heading" hidden>
             <h2 id="book-list-heading">Book records</h2>
-
-            <form
-                id="book-filters"
-                class="catalogue-search manage-search"
-                action="/manage-books.html"
-                method="get"
-            >
+            <form id="book-filters" class="catalogue-search manage-search" action="/manage-books.html" method="get">
                 <div class="form-field">
                     <label for="manage-search-term">Search books</label>
-                    <input
-                        type="search"
-                        id="manage-search-term"
-                        name="search"
-                        maxlength="150"
-                        placeholder="Title, author or ISBN"
-                    >
+                    <input type="search" id="manage-search-term" name="search" maxlength="150"
+                        placeholder="Title, author or ISBN">
                 </div>
-
                 <div class="form-field">
                     <label for="manage-status">Catalogue status</label>
                     <select id="manage-status" name="status">
@@ -212,18 +110,13 @@
                         <option value="inactive">Archived</option>
                     </select>
                 </div>
-
-                <button type="submit" class="button-primary">
-                    Search
-                </button>
+                <button type="submit" class="button-primary">Search</button>
             </form>
 
             <p id="book-list-message" role="status"></p>
-
             <div class="table-scroll">
                 <table class="book-table">
                     <caption>Catalogue records and available copies</caption>
-
                     <thead>
                         <tr>
                             <th scope="col">Book</th>
@@ -234,31 +127,13 @@
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
-
                     <tbody id="book-table-body"></tbody>
                 </table>
             </div>
-
             <div class="pagination">
-                <button
-                    type="button"
-                    id="previous-page"
-                    class="button-secondary"
-                    disabled
-                >
-                    Previous
-                </button>
-
+                <button type="button" id="previous-page" class="button-secondary" disabled>Previous</button>
                 <p id="page-message">Page 1 of 1</p>
-
-                <button
-                    type="button"
-                    id="next-page"
-                    class="button-secondary"
-                    disabled
-                >
-                    Next
-                </button>
+                <button type="button" id="next-page" class="button-secondary" disabled>Next</button>
             </div>
         </section>
     </main>
@@ -267,4 +142,5 @@
         <p>&copy; 2026 LibraManage</p>
     </footer>
 </body>
+
 </html>
