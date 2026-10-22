@@ -1,167 +1,136 @@
-const registrationForm =
-    document.getElementById("registration-form");
+(() => {
+    const { byId, message } = window.LibraUI;
+    const form = byId("registration-form");
+    const button = byId("register-button");
+    const statusMessage = byId("registration-message");
+    const fieldNames = [
+        "firstName", "lastName", "email", "password", "confirmPassword"
+    ];
 
-const registerButton =
-    document.getElementById("register-button");
+    let submitting = false;
 
-const registrationMessage =
-    document.getElementById("registration-message");
-
-const fieldNames = [
-    "firstName",
-    "lastName",
-    "email",
-    "password",
-    "confirmPassword"
-];
-
-let submitting = false;
-
-function showMessage(message, state) {
-    registrationMessage.textContent = message;
-    registrationMessage.dataset.state = state;
-    registrationMessage.hidden = false;
-}
-
-function clearFieldError(name) {
-    const input = registrationForm.elements.namedItem(name);
-    const error = document.getElementById(`${name}-error`);
-
-    if (input instanceof HTMLInputElement) {
-        input.removeAttribute("aria-invalid");
+    function showMessage(text, state) {
+        message(statusMessage, text, state);
     }
 
-    if (error) {
-        error.textContent = "";
-        error.hidden = true;
-    }
-}
+    function clearFieldError(name) {
+        const input = form.elements.namedItem(name);
+        const error = byId(`${name}-error`);
 
-function showFieldError(name, message) {
-    if (!fieldNames.includes(name)) {
-        return;
-    }
+        if (input instanceof HTMLInputElement) {
+            input.removeAttribute("aria-invalid");
+        }
 
-    const input = registrationForm.elements.namedItem(name);
-    const error = document.getElementById(`${name}-error`);
-
-    input.setAttribute("aria-invalid", "true");
-    error.textContent = message;
-    error.hidden = false;
-}
-
-function focusOnError() {
-    const invalidInput =
-        registrationForm.querySelector('[aria-invalid="true"]');
-
-    if (invalidInput) {
-        invalidInput.focus();
-    } else {
-        registrationMessage.focus();
-    }
-}
-
-// Remove a field's old error when it is edited.
-registrationForm.addEventListener("input", (event) => {
-    if (event.target instanceof HTMLInputElement) {
-        clearFieldError(event.target.name);
-    }
-});
-
-registrationForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    if (submitting) {
-        return;
+        if (error) {
+            error.textContent = "";
+            error.hidden = true;
+        }
     }
 
-    for (const name of fieldNames) {
-        clearFieldError(name);
+    function showFieldError(name, text) {
+        if (!fieldNames.includes(name)) return;
+
+        form.elements.namedItem(name).setAttribute("aria-invalid", "true");
+
+        const error = byId(`${name}-error`);
+        error.textContent = text;
+        error.hidden = false;
     }
 
-    registrationMessage.hidden = true;
-
-    const values = Object.fromEntries(
-        new FormData(registrationForm).entries()
-    );
-
-    if (values.password !== values.confirmPassword) {
-        showFieldError(
-            "confirmPassword",
-            "Your passwords must match."
-        );
-
-        showMessage(
-            "Please check the highlighted field.",
-            "error"
-        );
-
-        focusOnError();
-        return;
+    function focusOnError() {
+        const target = form.querySelector('[aria-invalid="true"]')
+            || statusMessage;
+        target.focus();
     }
 
-    submitting = true;
-    registerButton.disabled = true;
-    registerButton.textContent = "Creating account...";
-    registrationForm.setAttribute("aria-busy", "true");
+    function setSubmitting(value) {
+        submitting = value;
+        button.disabled = value;
+        button.textContent = value ? "Creating account..." : "Create account";
 
-    showMessage("Creating your account...", "loading");
+        if (value) {
+            form.setAttribute("aria-busy", "true");
+        } else {
+            form.removeAttribute("aria-busy");
+        }
+    }
 
-    try {
-        const response = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json"
-            },
-            body: JSON.stringify(values)
-        });
+    form.addEventListener("input", event => {
+        if (event.target instanceof HTMLInputElement) {
+            clearFieldError(event.target.name);
+        }
+    });
 
-        const data = await response.json();
+    form.addEventListener("submit", async event => {
+        event.preventDefault();
+        if (submitting) return;
 
-        if (!response.ok) {
-            showMessage(
-                data.message ||
-                    "We could not create your account. Please try again.",
-                "error"
-            );
+        fieldNames.forEach(clearFieldError);
+        statusMessage.hidden = true;
 
-            if (Array.isArray(data.errors)) {
-                for (const error of data.errors) {
-                    showFieldError(error.field, error.message);
-                }
-            }
+        const values = Object.fromEntries(new FormData(form).entries());
 
+        if (values.password !== values.confirmPassword) {
+            showFieldError("confirmPassword", "Your passwords must match.");
+            showMessage("Please check the highlighted field.", "error");
             focusOnError();
             return;
         }
 
-        if (typeof data.memberNumber !== "string") {
-            throw new Error("Unexpected registration response.");
+        setSubmitting(true);
+        showMessage("Creating your account...", "loading");
+
+        try {
+            const response = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json"
+                },
+                body: JSON.stringify(values)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                showMessage(
+                    data.message
+                    || "We could not create your account. Please try again.",
+                    "error"
+                );
+
+                if (Array.isArray(data.errors)) {
+                    for (const error of data.errors) {
+                        showFieldError(error.field, error.message);
+                    }
+                }
+
+                focusOnError();
+                return;
+            }
+
+            if (typeof data.memberNumber !== "string") {
+                throw new Error("Unexpected registration response.");
+            }
+
+            form.reset();
+            form.hidden = true;
+
+            showMessage(
+                `Your account has been created. Your membership number is ${data.memberNumber}.`,
+                "success"
+            );
+
+            statusMessage.focus();
+        } catch (error) {
+            console.error("Registration request failed:", error.message);
+            showMessage(
+                "We could not create your account. Please try again.",
+                "error"
+            );
+            statusMessage.focus();
+        } finally {
+            setSubmitting(false);
         }
-
-        registrationForm.reset();
-        registrationForm.hidden = true;
-
-        showMessage(
-            `Your account has been created. Your membership number is ${data.memberNumber}.`,
-            "success"
-        );
-
-        registrationMessage.focus();
-    } catch (error) {
-        console.error("Registration request failed:", error.message);
-
-        showMessage(
-            "We could not create your account. Please try again.",
-            "error"
-        );
-
-        registrationMessage.focus();
-    } finally {
-        submitting = false;
-        registerButton.disabled = false;
-        registerButton.textContent = "Create account";
-        registrationForm.removeAttribute("aria-busy");
-    }
-});
+    });
+})();

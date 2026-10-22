@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogue | LibraManage</title>
     <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/ui-helpers.js" defer></script>
     <script src="/js/catalogue.js" defer></script>
 </head>
+
 <body>
     <header class="site-header">
         <h1>LibraManage</h1>
@@ -29,21 +32,11 @@
             <h2 id="catalogue-heading">Book catalogue</h2>
             <p>Browse books and check their availability.</p>
 
-            <form
-                id="catalogue-search"
-                class="catalogue-search"
-                action="/catalogue.html"
-                method="get"
-            >
+            <form id="catalogue-search" class="catalogue-search" action="/catalogue.html" method="get">
                 <div class="form-field">
                     <label for="search-term">Search books</label>
-                    <input
-                        type="search"
-                        id="search-term"
-                        name="search"
-                        placeholder="Title, author or ISBN"
-                        maxlength="150"
-                    >
+                    <input type="search" id="search-term" name="search" placeholder="Title, author or ISBN"
+                        maxlength="150">
                 </div>
 
                 <div class="form-field">
@@ -65,9 +58,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="button-primary">
-                    Search
-                </button>
+                <button type="submit" class="button-primary">Search</button>
             </form>
         </section>
     </main>
@@ -76,4 +67,5 @@
         <p>&copy; 2026 LibraManage</p>
     </footer>
 </body>
+
 </html>
