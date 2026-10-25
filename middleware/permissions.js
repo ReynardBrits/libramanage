@@ -1,35 +1,35 @@
 const { timingSafeEqual } = require("node:crypto");
-
 const pool = require("../config/database");
+
+function signInRequired(res) {
+    return res.status(401).json({
+        code: "SIGN_IN_REQUIRED",
+        message: "Please sign in to manage library records."
+    });
+}
 
 async function requireStaff(req, res, next) {
     const userId = req.session?.userId;
 
     if (!Number.isInteger(userId)) {
-        return res.status(401).json({
-            code: "SIGN_IN_REQUIRED",
-            message: "Please sign in to manage library records."
-        });
+        return signInRequired(res);
     }
 
     try {
         const [users] = await pool.execute(`
-      SELECT r.role_name AS roleName
-      FROM users AS u
-      INNER JOIN roles AS r
-        ON r.role_id = u.role_id
-      WHERE u.user_id = ?
-        AND u.status = 'active'
+        SELECT r.role_name AS roleName
+        FROM users AS u
+        INNER JOIN roles AS r ON r.role_id = u.role_id
+        WHERE u.user_id = ? AND u.status = 'active'
     `, [userId]);
 
         if (!users.length) {
-            return res.status(401).json({
-                code: "SIGN_IN_REQUIRED",
-                message: "Please sign in to manage library records."
-            });
+            return signInRequired(res);
         }
 
-        if (!["admin", "librarian"].includes(users[0].roleName)) {
+        const { roleName } = users[0];
+
+        if (!["admin", "librarian"].includes(roleName)) {
             return res.status(403).json({
                 code: "FORBIDDEN",
                 message:
@@ -37,11 +37,7 @@ async function requireStaff(req, res, next) {
             });
         }
 
-        req.staffUser = {
-            userId,
-            roleName: users[0].roleName
-        };
-
+        req.staffUser = { userId, roleName };
         next();
     } catch (error) {
         next(error);
@@ -64,15 +60,11 @@ function requireCsrf(req, res, next) {
     ) {
         return res.status(403).json({
             code: "CSRF_INVALID",
-            message:
-                "Your session could not be verified. Please try again."
+            message: "Your session could not be verified. Please try again."
         });
     }
 
     next();
 }
 
-module.exports = {
-    requireStaff,
-    requireCsrf
-};
+module.exports = { requireStaff, requireCsrf };
