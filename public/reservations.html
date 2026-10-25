@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My reservations | LibraManage</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <script src="/js/ui-helpers.js" defer></script>
+    <script src="/js/reservations.js" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <h1>LibraManage</h1>
+        <p>Your library, organised.</p>
+
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/catalogue.html">Catalogue</a>
+            <a href="/login.html">My account</a>
+            <a href="/reservations.html" aria-current="page">
+                My reservations
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="welcome" aria-labelledby="reservations-heading">
+            <h2 id="reservations-heading">My reservations</h2>
+            <p>
+                Reserve a book at your preferred collection branch.
+                Library staff prepare copies in queue order.
+            </p>
+
+            <p
+                id="reservation-message"
+                class="form-message"
+                role="status"
+                hidden
+            ></p>
+
+            <p id="reservation-sign-in" hidden>
+                <a href="/login.html">Sign in to manage your reservations.</a>
+            </p>
+        </section>
+
+        <div id="reservation-workspace" hidden>
+            <section class="welcome" aria-labelledby="reserve-heading">
+                <h2 id="reserve-heading">Reserve a book</h2>
+                <p>
+                    Choose a book from the catalogue to start a reservation.
+                </p>
+                <h3 id="reservation-book-title"></h3>
+                <p id="reservation-policy"></p>
+
+                <form
+                    id="reservation-form"
+                    class="account-form"
+                    hidden
+                >
+                    <div class="form-field">
+                        <label for="reservation-branch">
+                            Collection branch
+                        </label>
+                        <select id="reservation-branch" required></select>
+                    </div>
+
+                    <button type="submit" class="button-primary">
+                        Reserve book
+                    </button>
+                </form>
+            </section>
+
+            <section
+                class="catalogue-results"
+                aria-labelledby="reservation-list-heading"
+            >
+                <h2 id="reservation-list-heading">Your reservations</h2>
+
+                <div class="form-field">
+                    <label for="reservation-status">Show reservations</label>
+                    <select id="reservation-status">
+                        <option value="active">Active</option>
+                        <option value="all">All</option>
+                        <option value="queued">Queued</option>
+                        <option value="ready">Ready for collection</option>
+                        <option value="collected">Collected</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                </div>
+
+                <button
+                    type="button"
+                    id="reservation-refresh"
+                    class="button-secondary"
+                >
+                    Refresh reservations
+                </button>
+
+                <div id="reservation-results" class="book-grid"></div>
+
+                <nav aria-label="Reservation pages">
+                    <button
+                        type="button"
+                        id="reservation-previous"
+                        class="button-secondary"
+                        disabled
+                    >
+                        Previous
+                    </button>
+
+                    <p id="reservation-page" role="status"></p>
+
+                    <button
+                        type="button"
+                        id="reservation-next"
+                        class="button-secondary"
+                        disabled
+                    >
+                        Next
+                    </button>
+                </nav>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 LibraManage</p>
+    </footer>
+</body>
+</html>

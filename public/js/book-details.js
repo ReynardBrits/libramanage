@@ -1,5 +1,6 @@
 (() => {
     const { byId, element } = window.LibraUI;
+
     const bookPage = byId("book-page");
     const bookTitle = byId("book-title");
     const bookMessage = byId("book-message");
@@ -9,8 +10,9 @@
     const availabilitySection = byId("availability-section");
     const availabilityMessage = byId("availability-message");
     const branchResults = byId("branch-results");
+    const reserveLink = byId("reserve-book-link");
 
-    function displayBook(book) {
+    function displayBook(book, bookId) {
         document.title = `${book.title} | LibraManage`;
         bookTitle.textContent = book.title;
 
@@ -35,6 +37,7 @@
             || "No description has been added for this book.";
 
         branchResults.replaceChildren();
+
         availabilityMessage.textContent = book.branches.length === 0
             ? "This book is not currently stocked at a branch."
             : "Check the available copies at each branch.";
@@ -56,6 +59,10 @@
             branchResults.append(card);
         }
 
+        reserveLink.href =
+            `/reservations.html?bookId=${encodeURIComponent(bookId)}`;
+        reserveLink.hidden = false;
+
         bookMessage.textContent = "";
         bookInformation.hidden = false;
         availabilitySection.hidden = false;
@@ -69,7 +76,8 @@
             || !/^[1-9]\d{0,9}$/.test(bookId)
             || Number(bookId) > 4294967295
         ) {
-            bookMessage.textContent = "Please choose a book from the catalogue.";
+            bookMessage.textContent =
+                "Please choose a book from the catalogue.";
             return;
         }
 
@@ -94,9 +102,10 @@
                 throw new Error("Unexpected book details response.");
             }
 
-            displayBook(data.book);
+            displayBook(data.book, bookId);
         } catch (error) {
             console.error("Could not load book details:", error.message);
+
             bookMessage.textContent =
                 "We could not load this book. Please refresh the page to try again.";
         } finally {

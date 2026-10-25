@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book details | LibraManage</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/book-details.css">
     <script src="/js/ui-helpers.js" defer></script>
     <script src="/js/book-details.js" defer></script>
 </head>
-
 <body>
     <header class="site-header">
         <h1>LibraManage</h1>
@@ -18,6 +17,8 @@
         <nav class="site-nav" aria-label="Main navigation">
             <a href="/">Home</a>
             <a href="/catalogue.html">Catalogue</a>
+            <a href="/login.html">My account</a>
+            <a href="/reservations.html">My reservations</a>
         </nav>
     </header>
 
@@ -30,12 +31,29 @@
 
             <div id="book-information" hidden>
                 <dl id="book-metadata"></dl>
+
                 <h3>Description</h3>
                 <p id="book-description"></p>
+
+                <div class="book-reservation">
+                    <a id="reserve-book-link" class="button-primary" hidden>
+                        Reserve this book
+                    </a>
+
+                    <p>
+                        Sign in with a member account to reserve a book.
+                        Choose your collection branch on the next page.
+                    </p>
+                </div>
             </div>
         </section>
 
-        <section id="availability-section" class="catalogue-results" aria-labelledby="availability-heading" hidden>
+        <section
+            id="availability-section"
+            class="catalogue-results"
+            aria-labelledby="availability-heading"
+            hidden
+        >
             <h2 id="availability-heading">Branch availability</h2>
             <p id="availability-message"></p>
             <div id="branch-results" class="book-grid"></div>
@@ -46,5 +64,4 @@
         <p>&copy; 2026 LibraManage</p>
     </footer>
 </body>
-
 </html>

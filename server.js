@@ -19,6 +19,8 @@ const manageBooksRouter = require("./routes/manage-books");
 const manageLoansRouter = require("./routes/manage-loans");
 const myBorrowingRouter = require("./routes/my-borrowing");
 const managePaymentsRouter = require("./routes/manage-payments");
+const myReservationsRouter = require("./routes/my-reservations");
+const manageReservationsRouter = require("./routes/manage-reservations");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -67,6 +69,8 @@ app.use("/api/manage/books", manageBooksRouter);
 app.use("/api/manage/loans", manageLoansRouter);
 app.use("/api/my-borrowing", myBorrowingRouter);
 app.use("/api/manage/payments", managePaymentsRouter);
+app.use("/api/my-reservations", myReservationsRouter);
+app.use("/api/manage/reservations", manageReservationsRouter);
 
 app.use("/api", (req, res) => {
     res.status(404).json({
@@ -115,7 +119,7 @@ async function startServer() {
             );
         });
 
-        server.on("error", (error) => {
+        server.on("error", error => {
             console.error("Server error:", error.message);
             process.exit(1);
         });

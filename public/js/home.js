@@ -5,27 +5,28 @@ async function addStaffNavigation() {
             cache: "no-store"
         });
 
-        if (!response.ok) {
-            return;
-        }
+        if (!response.ok) return;
 
         const data = await response.json();
-
-        if (!["admin", "librarian"].includes(data.user?.roleName)) {
-            return;
-        }
-
+        const user = data.user;
         const navigation = document.querySelector("header nav");
 
-        if (!navigation) {
-            return;
+        if (!user || !navigation) return;
+
+        const links = [];
+
+        if (user.memberNumber) {
+            links.push(["My reservations", "/reservations.html"]);
         }
 
-        const links = [
-            ["Manage books", "/manage-books.html"],
-            ["Manage loans", "/manage-loans.html"],
-            ["Manage payments", "/manage-payments.html"]
-        ];
+        if (["admin", "librarian"].includes(user.roleName)) {
+            links.push(
+                ["Manage books", "/manage-books.html"],
+                ["Manage loans", "/manage-loans.html"],
+                ["Manage payments", "/manage-payments.html"],
+                ["Manage reservations", "/manage-reservations.html"]
+            );
+        }
 
         for (const [label, href] of links) {
             if (navigation.querySelector(`a[href="${href}"]`)) {
