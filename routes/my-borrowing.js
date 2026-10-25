@@ -1,10 +1,13 @@
 const express = require("express");
-
-const {
-    getBorrowing
-} = require("../services/member-service");
+const { getBorrowing } = require("../services/member-service");
 
 const router = express.Router();
+
+const allowedFilters = ["loanStatus", "loanPage", "finePage"];
+const loanStatuses = ["all", "open", "overdue", "returned"];
+
+const validPage = value =>
+    typeof value === "string" && /^[1-9]\d{0,8}$/.test(value);
 
 router.use((req, res, next) => {
     res.set("Cache-Control", "no-store");
@@ -12,8 +15,7 @@ router.use((req, res, next) => {
     if (!Number.isInteger(req.session?.userId)) {
         return res.status(401).json({
             code: "SIGN_IN_REQUIRED",
-            message:
-                "Please sign in to view your borrowing records."
+            message: "Please sign in to view your borrowing records."
         });
     }
 
@@ -21,31 +23,14 @@ router.use((req, res, next) => {
 });
 
 router.get("/", async (req, res, next) => {
-    const allowed = [
-        "loanStatus",
-        "loanPage",
-        "finePage"
-    ];
-
     const loanStatus = req.query.loanStatus ?? "all";
     const loanPage = req.query.loanPage ?? "1";
     const finePage = req.query.finePage ?? "1";
 
-    const validPage = value => {
-        return (
-            typeof value === "string"
-            && /^[1-9]\d{0,8}$/.test(value)
-        );
-    };
-
     if (
-        Object.keys(req.query).some(key => {
-            return !allowed.includes(key);
-        })
+        Object.keys(req.query).some(key => !allowedFilters.includes(key))
         || typeof loanStatus !== "string"
-        || !["all", "open", "overdue", "returned"].includes(
-            loanStatus
-        )
+        || !loanStatuses.includes(loanStatus)
         || !validPage(loanPage)
         || !validPage(finePage)
     ) {
@@ -55,15 +40,12 @@ router.get("/", async (req, res, next) => {
     }
 
     try {
-        // Identity comes from the authenticated server session.
-        const result = await getBorrowing(
-            req.session.userId,
-            {
-                loanStatus,
-                loanPage: Number(loanPage),
-                finePage: Number(finePage)
-            }
-        );
+        // Use the signed-in user's identity, never a client-supplied user ID.
+        const result = await getBorrowing(req.session.userId, {
+            loanStatus,
+            loanPage: Number(loanPage),
+            finePage: Number(finePage)
+        });
 
         res.json(result);
     } catch (error) {
