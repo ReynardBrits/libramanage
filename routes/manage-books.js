@@ -1,23 +1,15 @@
 const express = require("express");
-
-const {
-    body,
-    matchedData,
-    validationResult
-} = require("express-validator");
-
-const {
-    requireStaff,
-    requireCsrf
-} = require("../middleware/permissions");
-
+const { body, matchedData, validationResult } = require("express-validator");
+const { requireStaff, requireCsrf } = require("../middleware/permissions");
 const books = require("../services/book-service");
 
 const router = express.Router();
 
-const asyncRoute = (handler) => (req, res, next) => {
+const asyncRoute = handler => (req, res, next) => {
     Promise.resolve(handler(req, res, next)).catch(next);
 };
+
+const validatedBody = req => matchedData(req, { locations: ["body"] });
 
 router.use((req, res, next) => {
     res.set("Cache-Control", "no-store");
@@ -27,13 +19,8 @@ router.use((req, res, next) => {
 router.use(requireStaff);
 
 router.param("bookId", (req, res, next, value) => {
-    if (
-        !/^[1-9]\d{0,9}$/.test(value) ||
-        Number(value) > 4294967295
-    ) {
-        return res.status(400).json({
-            message: "Choose a valid book."
-        });
+    if (!/^[1-9]\d{0,9}$/.test(value) || Number(value) > 4294967295) {
+        return res.status(400).json({ message: "Choose a valid book." });
     }
 
     req.bookId = Number(value);
@@ -52,10 +39,7 @@ function requireJson(req, res, next) {
 
 function idRule(field, optional = false) {
     let rule = body(field);
-
-    if (optional) {
-        rule = rule.optional({ values: "falsy" });
-    }
+    if (optional) rule = rule.optional({ values: "falsy" });
 
     return rule
         .isString()
@@ -67,13 +51,11 @@ function idRule(field, optional = false) {
         .toInt();
 }
 
+// Convert a validated ISBN-10 into its equivalent ISBN-13.
 function toIsbn13(isbn) {
-    if (isbn.length === 13) {
-        return isbn;
-    }
+    if (isbn.length === 13) return isbn;
 
     const base = "978" + isbn.slice(0, 9);
-
     const sum = [...base].reduce(
         (total, digit, index) =>
             total + Number(digit) * (index % 2 === 0 ? 1 : 3),
@@ -100,9 +82,7 @@ const bookRules = [
         .isLength({ min: 10, max: 20 })
         .withMessage("Enter a valid ISBN.")
         .bail()
-        .customSanitizer((value) =>
-            value.replace(/[\s-]/g, "").toUpperCase()
-        )
+        .customSanitizer(value => value.replace(/[\s-]/g, "").toUpperCase())
         .isISBN()
         .withMessage("Enter a valid ISBN-10 or ISBN-13.")
         .bail()
@@ -125,9 +105,7 @@ const bookRules = [
         .isInt({ min: 1, max: 65535 })
         .withMessage("Enter a valid publication year.")
         .bail()
-        .custom((value) =>
-            Number(value) <= new Date().getFullYear() + 1
-        )
+        .custom(value => Number(value) <= new Date().getFullYear() + 1)
         .withMessage(
             "Publication year cannot be more than one year in the future."
         )
@@ -163,12 +141,10 @@ function rejectInvalidFields(req, res, next) {
     if (!validation.isEmpty()) {
         return res.status(400).json({
             message: "Please check the book details.",
-            errors: validation
-                .array({ onlyFirstError: true })
-                .map((error) => ({
-                    field: error.path,
-                    message: error.msg
-                }))
+            errors: validation.array({ onlyFirstError: true }).map(error => ({
+                field: error.path,
+                message: error.msg
+            }))
         });
     }
 
@@ -185,12 +161,12 @@ router.get("/", asyncRoute(async (req, res) => {
     const page = req.query.page ?? "1";
 
     if (
-        typeof search !== "string" ||
-        search.length > 150 ||
-        typeof status !== "string" ||
-        !["all", "active", "inactive"].includes(status) ||
-        typeof page !== "string" ||
-        !/^[1-9]\d{0,8}$/.test(page)
+        typeof search !== "string"
+        || search.length > 150
+        || typeof status !== "string"
+        || !["all", "active", "inactive"].includes(status)
+        || typeof page !== "string"
+        || !/^[1-9]\d{0,8}$/.test(page)
     ) {
         return res.status(400).json({
             message: "Use valid search, status and page values."
@@ -205,9 +181,7 @@ router.get("/", asyncRoute(async (req, res) => {
 }));
 
 router.get("/:bookId", asyncRoute(async (req, res) => {
-    res.json({
-        book: await books.getBook(req.bookId)
-    });
+    res.json({ book: await books.getBook(req.bookId) });
 }));
 
 router.post(
@@ -218,11 +192,7 @@ router.post(
     creationRules,
     rejectInvalidFields,
     asyncRoute(async (req, res) => {
-        const values = matchedData(req, {
-            locations: ["body"]
-        });
-
-        res.status(201).json(await books.createBook(values));
+        res.status(201).json(await books.createBook(validatedBody(req)));
     })
 );
 
@@ -233,11 +203,7 @@ router.put(
     bookRules,
     rejectInvalidFields,
     asyncRoute(async (req, res) => {
-        const values = matchedData(req, {
-            locations: ["body"]
-        });
-
-        res.json(await books.updateBook(req.bookId, values));
+        res.json(await books.updateBook(req.bookId, validatedBody(req)));
     })
 );
 
@@ -256,23 +222,16 @@ router.patch(
     rejectInvalidFields,
 
     asyncRoute(async (req, res) => {
-        const { status } = matchedData(req, {
-            locations: ["body"]
-        });
-
+        const { status } = validatedBody(req);
         res.json(await books.setBookStatus(req.bookId, status));
     })
 );
 
 router.use((error, req, res, next) => {
-    if (res.headersSent) {
-        return next(error);
-    }
+    if (res.headersSent) return next(error);
 
     if (error.status) {
-        return res.status(error.status).json({
-            message: error.message
-        });
+        return res.status(error.status).json({ message: error.message });
     }
 
     if (error.code === "ER_DUP_ENTRY") {
