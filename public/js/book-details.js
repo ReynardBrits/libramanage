@@ -5,6 +5,7 @@
     const bookTitle = byId("book-title");
     const bookMessage = byId("book-message");
     const bookInformation = byId("book-information");
+    const bookCoverContainer = byId("book-cover-container");
     const bookMetadata = byId("book-metadata");
     const bookDescription = byId("book-description");
     const availabilitySection = byId("availability-section");
@@ -16,7 +17,11 @@
         document.title = `${book.title} | LibraManage`;
         bookTitle.textContent = book.title;
 
-        const details = [
+        bookCoverContainer.replaceChildren(
+            window.LibraCovers.create(book, { large: true })
+        );
+
+        const metadata = [
             ["Author", book.author],
             ["ISBN", book.isbn],
             ["Category", book.category],
@@ -26,33 +31,35 @@
 
         bookMetadata.replaceChildren();
 
-        for (const [label, value] of details) {
+        for (const [label, value] of metadata) {
             bookMetadata.append(
                 element("dt", label),
-                element("dd", String(value))
+                element("dd", String(value ?? "Not recorded"))
             );
         }
 
-        bookDescription.textContent = book.description?.trim()
-            || "No description has been added for this book.";
+        bookDescription.textContent =
+            typeof book.description === "string" && book.description.trim()
+                ? book.description.trim()
+                : "No description is available for this book.";
 
         branchResults.replaceChildren();
 
-        availabilityMessage.textContent = book.branches.length === 0
-            ? "This book is not currently stocked at a branch."
-            : "Check the available copies at each branch.";
+        availabilityMessage.textContent = book.branches.length
+            ? "Check the available copies at each branch."
+            : "This book is not currently stocked at a branch.";
 
         for (const branch of book.branches) {
             const card = document.createElement("article");
             card.className = "book-card";
 
-            const availability = branch.availableCopies > 0
-                ? `${branch.availableCopies} available`
-                : "No copies available";
-
             card.append(
                 element("h3", branch.branchName),
-                element("p", availability, "book-availability"),
+                element(
+                    "p",
+                    `Available copies: ${branch.availableCopies}`,
+                    "book-availability"
+                ),
                 element("p", `Total copies: ${branch.totalCopies}`)
             );
 
@@ -72,12 +79,12 @@
         const bookId = new URLSearchParams(window.location.search).get("id");
 
         if (
-            !bookId
-            || !/^[1-9]\d{0,9}$/.test(bookId)
-            || Number(bookId) > 4294967295
+            !bookId ||
+            !/^[1-9]\d{0,9}$/.test(bookId) ||
+            Number(bookId) > 4294967295
         ) {
             bookMessage.textContent =
-                "Please choose a book from the catalogue.";
+                "Choose a book from the catalogue to view its details.";
             return;
         }
 
@@ -86,28 +93,37 @@
         try {
             const response = await fetch(
                 `/api/books/${encodeURIComponent(bookId)}`,
-                { headers: { Accept: "application/json" } }
+                {
+                    headers: {
+                        Accept: "application/json"
+                    },
+                    cache: "no-store"
+                }
             );
 
             if (!response.ok) {
                 bookMessage.textContent = response.status === 404
                     ? "This book could not be found."
-                    : "We could not load this book. Please try again.";
+                    : "Book details could not be loaded. Please try again.";
                 return;
             }
 
             const data = await response.json();
 
-            if (!data.book || !Array.isArray(data.book.branches)) {
-                throw new Error("Unexpected book details response.");
+            if (
+                !data.book ||
+                typeof data.book !== "object" ||
+                !Array.isArray(data.book.branches)
+            ) {
+                throw new Error("The server returned invalid book details.");
             }
 
             displayBook(data.book, bookId);
         } catch (error) {
-            console.error("Could not load book details:", error.message);
+            console.error("Unable to load book details:", error);
 
             bookMessage.textContent =
-                "We could not load this book. Please refresh the page to try again.";
+                "Book details could not be loaded. Please refresh the page.";
         } finally {
             bookPage.removeAttribute("aria-busy");
         }

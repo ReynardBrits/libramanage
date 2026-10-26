@@ -1,3 +1,45 @@
+.book-overview {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    align-items: start;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+#book-cover-container .book-cover {
+    margin-bottom: 0;
+}
+
+.book-summary {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+#book-metadata {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 0.75rem 1.25rem;
+    margin: 0 0 1.5rem;
+}
+
+#book-metadata dt {
+    font-weight: bold;
+    color: #334155;
+}
+
+#book-metadata dd {
+    margin: 0;
+}
+
+.book-summary h3 {
+    margin: 0 0 0.75rem;
+}
+
+#book-description {
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
 .book-reservation {
     display: flex;
     flex-direction: column;
@@ -23,4 +65,31 @@
 .book-reservation p {
     max-width: 65ch;
     font-size: 0.95rem;
+}
+
+#book-information[hidden],
+#availability-section[hidden] {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .book-overview {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+    }
+
+    #book-cover-container {
+        justify-self: center;
+        width: 260px;
+        max-width: 100%;
+    }
+
+    #book-metadata {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.35rem;
+    }
+
+    #book-metadata dd {
+        margin-bottom: 0.75rem;
+    }
 }

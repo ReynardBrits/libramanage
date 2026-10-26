@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book details | LibraManage</title>
+
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/covers.css">
     <link rel="stylesheet" href="/css/book-details.css">
+
     <script src="/js/ui-helpers.js" defer></script>
+    <script src="/js/book-cover.js" defer></script>
     <script src="/js/book-details.js" defer></script>
 </head>
 <body>
@@ -23,20 +27,32 @@
     </header>
 
     <main id="book-page">
-        <p><a href="/catalogue.html">Back to catalogue</a></p>
+        <p>
+            <a href="/catalogue.html">Back to catalogue</a>
+        </p>
 
         <section class="welcome" aria-labelledby="book-title">
             <h2 id="book-title">Book details</h2>
             <p id="book-message" role="status">Loading book details...</p>
 
             <div id="book-information" hidden>
-                <dl id="book-metadata"></dl>
+                <div class="book-overview">
+                    <div id="book-cover-container"></div>
 
-                <h3>Description</h3>
-                <p id="book-description"></p>
+                    <div class="book-summary">
+                        <dl id="book-metadata"></dl>
+
+                        <h3>Description</h3>
+                        <p id="book-description"></p>
+                    </div>
+                </div>
 
                 <div class="book-reservation">
-                    <a id="reserve-book-link" class="button-primary" hidden>
+                    <a
+                        id="reserve-book-link"
+                        class="button-primary"
+                        hidden
+                    >
                         Reserve this book
                     </a>
 

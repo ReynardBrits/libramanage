@@ -21,6 +21,12 @@ const myBorrowingRouter = require("./routes/my-borrowing");
 const managePaymentsRouter = require("./routes/manage-payments");
 const myReservationsRouter = require("./routes/my-reservations");
 const manageReservationsRouter = require("./routes/manage-reservations");
+const manageBookCoversRouter = require("./routes/manage-book-covers");
+
+const {
+    COVER_DIRECTORY,
+    COVER_URL_PREFIX
+} = require("./utils/book-covers");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -71,12 +77,39 @@ app.use("/api/my-borrowing", myBorrowingRouter);
 app.use("/api/manage/payments", managePaymentsRouter);
 app.use("/api/my-reservations", myReservationsRouter);
 app.use("/api/manage/reservations", manageReservationsRouter);
+app.use("/api/manage/book-covers", manageBookCoversRouter);
 
 app.use("/api", (req, res) => {
     res.status(404).json({
         message: "API endpoint not found."
     });
 });
+
+// Serve only the JPEG filenames created by our cover helper.
+app.use(
+    COVER_URL_PREFIX,
+    (req, res, next) => {
+        const validFilename =
+            /^\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.jpg$/;
+
+        if (
+            !["GET", "HEAD"].includes(req.method)
+            || !validFilename.test(req.path)
+        ) {
+            return res.status(404).end();
+        }
+
+        next();
+    },
+    express.static(COVER_DIRECTORY, {
+        dotfiles: "deny",
+        index: false,
+        redirect: false,
+        maxAge: "1d",
+        immutable: true
+    }),
+    (req, res) => res.status(404).end()
+);
 
 app.use(express.static(path.join(__dirname, "public")));
 

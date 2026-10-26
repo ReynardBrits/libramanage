@@ -1,5 +1,6 @@
 (() => {
     const { byId, element } = window.LibraUI;
+
     const searchForm = byId("catalogue-search");
     const resultsContainer = byId("book-results");
     const resultMessage = byId("result-message");
@@ -22,21 +23,24 @@
 
         for (const book of books) {
             const card = document.createElement("article");
-            card.className = "book-card";
+            card.className = "book-card catalogue-card";
 
             const availability = book.availableCopies > 0
                 ? `${book.availableCopies} available`
                 : "No copies available";
 
             const detailsLink = element("a", "View details");
+
             detailsLink.href =
                 `/book-details.html?id=${encodeURIComponent(book.bookId)}`;
+
             detailsLink.setAttribute(
                 "aria-label",
                 `View details for ${book.title}`
             );
 
             card.append(
+                window.LibraCovers.create(book),
                 element("h3", book.title),
                 element("p", `By ${book.author}`),
                 element("p", `ISBN: ${book.isbn}`),
@@ -66,14 +70,18 @@
 
         for (const [name, value] of new FormData(searchForm).entries()) {
             const cleanedValue = String(value).trim();
+
             if (cleanedValue) parameters.set(name, cleanedValue);
         }
 
         try {
-            const response = await fetch(`/api/books?${parameters.toString()}`, {
-                headers: { Accept: "application/json" },
-                signal: controller.signal
-            });
+            const response = await fetch(
+                `/api/books?${parameters.toString()}`,
+                {
+                    headers: { Accept: "application/json" },
+                    signal: controller.signal
+                }
+            );
 
             if (!response.ok) {
                 throw new Error(
@@ -94,6 +102,7 @@
             if (controller.signal.aborted) return;
 
             console.error("Could not load books:", error.message);
+
             resultMessage.textContent =
                 "We could not load the books. Please try searching again.";
         } finally {

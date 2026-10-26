@@ -1,0 +1,71 @@
+#cover-message {
+    margin-top: 1rem;
+}
+
+.cover-search-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.cover-book-field {
+    margin-top: 1.25rem;
+}
+
+#cover-upload-form {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #dbe3ed;
+}
+
+#cover-upload-form h3 {
+    margin: 0;
+    color: #163a63;
+}
+
+.cover-preview {
+    display: block;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    max-height: 320px;
+    border: 1px solid #dbe3ed;
+    border-radius: 6px;
+}
+
+.cover-preview[hidden] {
+    display: none;
+}
+
+.cover-reload {
+    min-height: 44px;
+    padding: 0.65rem 1rem;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #163a63;
+    font: inherit;
+    cursor: pointer;
+}
+
+.cover-reload:hover {
+    background-color: #eaf1f8;
+}
+
+.cover-reload:focus-visible {
+    outline: 3px solid #0e7490;
+    outline-offset: 2px;
+}
+
+#cover-workspace button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .cover-search-form {
+        grid-template-columns: 1fr;
+    }
+}
