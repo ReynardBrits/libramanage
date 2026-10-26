@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/forms.css">
     <link rel="stylesheet" href="/css/manage-books.css">
+    <link rel="stylesheet" href="/css/covers.css">
 
     <script src="/js/ui-helpers.js" defer></script>
+    <script src="/js/book-cover.js" defer></script>
     <script src="/js/manage-books.js" defer></script>
 </head>
 <body>
@@ -21,8 +23,9 @@
             <a href="/">Home</a>
             <a href="/catalogue.html">Catalogue</a>
             <a href="/login.html">My account</a>
-            <a href="/manage-books.html" aria-current="page">Manage books</a>
-            <a href="/manage-book-covers.html">Book covers</a>
+            <a href="/manage-books.html" aria-current="page">
+                Manage books
+            </a>
         </nav>
     </header>
 
@@ -149,6 +152,49 @@
                         maxlength="5000"
                         rows="5"
                     ></textarea>
+                </div>
+
+                <div class="form-field wide">
+                    <label for="book-cover-file">Book cover (optional)</label>
+                    <input
+                        type="file"
+                        id="book-cover-file"
+                        accept="image/jpeg,image/png,image/webp"
+                        aria-describedby="book-cover-help book-cover-message"
+                    >
+
+                    <p id="book-cover-help" class="form-help">
+                        Choose a JPEG, PNG or WebP image up to 8 MB.
+                        Images are compressed automatically.
+                        Leave this empty to keep an existing cover.
+                    </p>
+
+                    <p id="book-cover-message" class="form-help" role="status">
+                        A cover is optional. It will upload after the book
+                        is saved.
+                    </p>
+
+                    <div id="book-cover-preview"></div>
+
+                    <div class="manage-actions">
+                        <button
+                            type="button"
+                            id="upload-cover-button"
+                            class="button-secondary"
+                            hidden
+                        >
+                            Upload selected cover
+                        </button>
+
+                        <button
+                            type="button"
+                            id="reload-cover-button"
+                            class="button-secondary"
+                            hidden
+                        >
+                            Reload saved cover
+                        </button>
+                    </div>
                 </div>
 
                 <div class="manage-actions wide">

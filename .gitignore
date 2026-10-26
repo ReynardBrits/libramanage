@@ -6,6 +6,9 @@ node_modules/
 .env.*
 !.env.example
 
+# Uploaded book covers
+/storage/covers/
+
 # Logs
 *.log
 
