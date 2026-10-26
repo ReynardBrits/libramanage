@@ -37,9 +37,16 @@ app.use(
     helmet({
         contentSecurityPolicy: {
             directives: {
-                "upgrade-insecure-requests": process.env.NODE_ENV === "production"
-                    ? []
-                    : null
+                "img-src": [
+                    "'self'",
+                    "data:",
+                    "https://covers.openlibrary.org",
+                    "https://images.penguinrandomhouse.com"
+                ],
+                "upgrade-insecure-requests":
+                    process.env.NODE_ENV === "production"
+                        ? []
+                        : null
             }
         }
     })

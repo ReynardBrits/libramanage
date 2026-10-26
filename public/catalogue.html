@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogue | LibraManage</title>
+
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/covers.css">
+
     <script src="/js/ui-helpers.js" defer></script>
     <script src="/js/book-cover.js" defer></script>
     <script src="/js/catalogue.js" defer></script>
@@ -74,9 +76,38 @@
             class="catalogue-results"
             aria-labelledby="results-heading"
         >
-            <h2 id="results-heading">Books</h2>
+            <h2 id="results-heading" tabindex="-1">Books</h2>
             <p id="result-message" role="status"></p>
             <div id="book-results" class="book-grid"></div>
+
+            <nav
+                id="catalogue-pagination"
+                class="catalogue-pagination"
+                aria-label="Catalogue pages"
+                hidden
+            >
+                <button
+                    type="button"
+                    id="catalogue-previous"
+                    class="catalogue-page-button"
+                    disabled
+                >
+                    Previous
+                </button>
+
+                <p id="catalogue-page-message" aria-live="polite">
+                    Page 1 of 1
+                </p>
+
+                <button
+                    type="button"
+                    id="catalogue-next"
+                    class="catalogue-page-button"
+                    disabled
+                >
+                    Next
+                </button>
+            </nav>
         </section>
     </main>
 
