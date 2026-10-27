@@ -1,25 +1,28 @@
 {
-  "name": "libramanage",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "dotenv": "^18.0.8",
-    "express": "^5.3.0",
-    "express-mysql-session": "^3.0.3",
-    "express-rate-limit": "^8.7.1",
-    "express-session": "^1.19.0",
-    "express-validator": "^7.3.2",
-    "helmet": "^8.3.0",
-    "multer": "^2.5.0",
-    "mysql2": "^3.24.6",
-    "sharp": "^0.35.5"
-  }
+    "name": "libramanage",
+    "version": "1.0.0",
+    "description": "Library management web application built with Express and MySQL.",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "dependencies": {
+        "dotenv": "^18.0.8",
+        "express": "^5.3.0",
+        "express-mysql-session": "^3.0.3",
+        "express-rate-limit": "^8.7.1",
+        "express-session": "^1.19.0",
+        "express-validator": "^7.3.2",
+        "helmet": "^8.3.0",
+        "multer": "^2.5.0",
+        "mysql2": "^3.24.6",
+        "sharp": "^0.35.5"
+    },
+    "engines": {
+        "node": "24.x"
+    }
 }

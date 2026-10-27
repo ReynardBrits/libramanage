@@ -33,6 +33,14 @@ const PORT = Number(process.env.PORT || 3000);
 
 app.disable("x-powered-by");
 
+// Trust Railway's nearest proxy so secure session cookies work over HTTPS.
+if (
+    process.env.NODE_ENV === "production"
+    && process.env.RAILWAY_ENVIRONMENT_ID
+) {
+    app.set("trust proxy", 1);
+}
+
 app.use(
     helmet({
         contentSecurityPolicy: {
@@ -57,6 +65,8 @@ app.use("/api", express.json({
 }));
 
 app.get("/api/health", async (req, res) => {
+    res.set("Cache-Control", "no-store");
+
     try {
         await pool.execute("SELECT 1");
 
@@ -153,9 +163,9 @@ async function startServer() {
         console.log("Connected to MySQL.");
         console.log("Session storage is ready.");
 
-        const server = app.listen(PORT, () => {
+        const server = app.listen(PORT, "0.0.0.0", () => {
             console.log(
-                `LibraManage is running at http://localhost:${PORT}`
+                `LibraManage is listening on port ${PORT}.`
             );
         });
 
