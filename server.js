@@ -35,10 +35,10 @@ const PORT = Number(process.env.PORT || 3000);
 
 app.disable("x-powered-by");
 
-// Trust Railway's nearest proxy so secure session cookies work over HTTPS.
+// Trust Render's nearest proxy so secure session cookies work over HTTPS.
 if (
     process.env.NODE_ENV === "production"
-    && process.env.RAILWAY_ENVIRONMENT_ID
+    && process.env.RENDER === "true"
 ) {
     app.set("trust proxy", 1);
 }
