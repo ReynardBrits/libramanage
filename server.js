@@ -8,6 +8,7 @@ const express = require("express");
 const helmet = require("helmet");
 const { rateLimit } = require("express-rate-limit");
 const pool = require("./config/database");
+const { requireCsrf } = require("./middleware/permissions");
 
 const {
     sessionStore,
@@ -98,6 +99,9 @@ app.get("/api/health", async (req, res) => {
 });
 
 app.use("/api", sessionMiddleware);
+
+// Require a session token before any API request that can change data.
+app.use("/api", requireCsrf);
 
 app.use("/api/books", catalogueRouter);
 app.use("/api/auth", authRouter);

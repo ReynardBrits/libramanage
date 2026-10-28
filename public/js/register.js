@@ -55,6 +55,28 @@
         }
     }
 
+    async function loadCsrfToken() {
+        const response = await fetch("/api/auth/csrf-token", {
+            credentials: "same-origin",
+            cache: "no-store",
+            headers: {
+                Accept: "application/json"
+            }
+        });
+
+        const data = await response.json();
+
+        if (
+            !response.ok
+            || typeof data.csrfToken !== "string"
+            || !/^[0-9a-f]{64}$/.test(data.csrfToken)
+        ) {
+            throw new Error("Could not obtain a valid CSRF token.");
+        }
+
+        return data.csrfToken;
+    }
+
     form.addEventListener("input", event => {
         if (event.target instanceof HTMLInputElement) {
             clearFieldError(event.target.name);
@@ -81,10 +103,15 @@
         showMessage("Creating your account...", "loading");
 
         try {
+            const csrfToken = await loadCsrfToken();
+
             const response = await fetch("/api/auth/register", {
                 method: "POST",
+                credentials: "same-origin",
+                cache: "no-store",
                 headers: {
                     "Content-Type": "application/json",
+                    "X-CSRF-Token": csrfToken,
                     Accept: "application/json"
                 },
                 body: JSON.stringify(values)

@@ -44,20 +44,33 @@ async function requireStaff(req, res, next) {
     }
 }
 
-function requireCsrf(req, res, next) {
-    const expected = req.session?.csrfToken;
-    const submitted = req.get("X-CSRF-Token");
+const safeMethods = new Set(["GET", "HEAD", "OPTIONS"]);
 
+function verifyCsrfToken(expected, submitted) {
     if (
         typeof expected !== "string"
         || typeof submitted !== "string"
         || !/^[0-9a-f]{64}$/.test(expected)
         || !/^[0-9a-f]{64}$/.test(submitted)
-        || !timingSafeEqual(
-            Buffer.from(expected),
-            Buffer.from(submitted)
-        )
     ) {
+        return false;
+    }
+
+    return timingSafeEqual(
+        Buffer.from(expected, "hex"),
+        Buffer.from(submitted, "hex")
+    );
+}
+
+function requireCsrf(req, res, next) {
+    if (safeMethods.has(req.method)) {
+        return next();
+    }
+
+    if (!verifyCsrfToken(
+        req.session?.csrfToken,
+        req.get("X-CSRF-Token")
+    )) {
         return res.status(403).json({
             code: "CSRF_INVALID",
             message: "Your session could not be verified. Please try again."
