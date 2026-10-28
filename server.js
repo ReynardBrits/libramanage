@@ -6,6 +6,7 @@ require("dotenv").config({
 
 const express = require("express");
 const helmet = require("helmet");
+const { rateLimit } = require("express-rate-limit");
 const pool = require("./config/database");
 
 const {
@@ -59,6 +60,18 @@ app.use(
         }
     })
 );
+
+// Limit API traffic before parsing bodies, reading sessions or querying MySQL.
+app.use("/api", rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 300,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    message: {
+        code: "RATE_LIMITED",
+        message: "Too many requests. Please try again in 15 minutes."
+    }
+}));
 
 app.use("/api", express.json({
     limit: "32kb"
