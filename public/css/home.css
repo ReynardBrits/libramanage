@@ -1,0 +1,240 @@
+.home-page {
+    --home-ink: #192e3c;
+    --home-muted: #4e5e63;
+    --home-accent: #a7e3c9;
+    background: #f8f6ef;
+    color: var(--home-ink);
+}
+
+.home-page :focus-visible {
+    outline: 3px solid #087660;
+    outline-offset: 4px;
+}
+
+.home-width {
+    width: min(calc(100% - 2rem), 1120px);
+    margin-inline: auto;
+}
+
+.home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding-block: 1rem;
+}
+
+.home-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: inherit;
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.home-brand svg {
+    box-sizing: content-box;
+    padding: 0.55rem;
+    border-radius: 0.75rem;
+    background: var(--home-ink);
+    color: var(--home-accent);
+}
+
+.home-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+.home-nav a {
+    padding: 0.65rem 0.85rem;
+    border-radius: 0.6rem;
+    color: inherit;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.home-nav a:hover,
+.home-nav a[aria-current="page"] {
+    background: #e7ede5;
+}
+
+.home-main {
+    max-width: none;
+    margin-block: 0.75rem 3rem;
+}
+
+.home-hero {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    border-radius: 1.5rem;
+    background: radial-gradient(ellipse at top right, #2f5364, #182e3d 72%);
+    color: #fff;
+}
+
+.home-label {
+    margin: 0 0 0.8rem;
+    color: var(--home-accent);
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.16em;
+}
+
+.home-hero h1,
+.home-guide h2 {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-weight: normal;
+}
+
+.home-hero h1 {
+    font-size: clamp(3rem, 6.5vw, 5.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+}
+
+.home-hero h1 span {
+    display: block;
+    color: var(--home-accent);
+}
+
+.home-intro {
+    max-width: 36ch;
+    margin: 1.25rem 0 1.5rem;
+    color: #dae5ec;
+    font-size: 1.05rem;
+}
+
+.home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.home-button {
+    padding: 0.7rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.65rem;
+    background: var(--home-accent);
+    color: var(--home-ink);
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+}
+
+.home-button:hover {
+    background: #cdf4e2;
+}
+
+.home-button-quiet {
+    border-color: #8197a4;
+    background: transparent;
+    color: #fff;
+}
+
+.home-button-quiet:hover {
+    background: #345569;
+}
+
+.home-hero :focus-visible {
+    outline-color: #f5d28e;
+}
+
+.home-art {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin-inline: auto;
+}
+
+.home-guide {
+    margin-top: 2.5rem;
+}
+
+.home-guide h2 {
+    margin-bottom: 1rem;
+    font-size: clamp(1.7rem, 4vw, 2.35rem);
+    line-height: 1.2;
+}
+
+.home-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.home-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.35rem;
+    border: 1px solid #dedfd5;
+    border-radius: 1rem;
+    background: #fff;
+}
+
+.home-step {
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.45rem;
+    background: #dcefe5;
+    color: #205e4b;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.home-card h3 {
+    margin: 0.65rem 0 0;
+}
+
+.home-card p {
+    margin: 0.25rem 0 0.55rem;
+    color: var(--home-muted);
+}
+
+.home-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    margin-top: auto;
+    color: #14614e;
+    font-weight: bold;
+    text-underline-offset: 0.2em;
+}
+
+.home-footer {
+    padding-block: 1rem;
+    border-top: 1px solid #dedfd5;
+    color: var(--home-muted);
+    font-size: 0.9rem;
+}
+
+.home-footer p {
+    margin: 0;
+}
+
+@media (max-width: 760px) {
+    .home-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .home-nav {
+        justify-content: flex-start;
+    }
+
+    .home-hero,
+    .home-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .home-art {
+        max-width: 245px;
+    }
+}
