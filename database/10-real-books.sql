@@ -1,8 +1,4 @@
 -- LibraManage: 50 real titles with sample inventory.
--- Years describe the listed editions.
--- Descriptions are short catalogue summaries.
--- Adds two sample copies per title to each branch.
--- Existing book details, covers and circulation records are preserved.
 
 USE libramanage;
 

@@ -1,6 +1,6 @@
 USE libramanage;
 
--- Demonstration only: adjust the test loan's dates.
+-- Demonstration only
 SET @demo_member_number = 'LM-000001';
 SET @demo_book_title = 'Clean Code';
 SET @demo_now = UTC_TIMESTAMP();

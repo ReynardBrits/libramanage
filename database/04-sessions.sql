@@ -20,5 +20,4 @@ CREATE TABLE IF NOT EXISTS sessions (
     INDEX idx_sessions_expires (expires)
 ) ENGINE=InnoDB;
 
--- Check that the table was created.
 SHOW COLUMNS FROM sessions;

@@ -1,6 +1,3 @@
--- LibraManage: user accounts and membership
--- Run this script after creating the libramanage database.
-
 USE libramanage;
 
 -- Account types used by the application.

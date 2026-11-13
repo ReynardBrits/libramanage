@@ -1,12 +1,13 @@
+/* Book cover containers */
 .book-cover {
     position: relative;
     width: 100%;
     height: 240px;
     margin-bottom: 1.25rem;
     overflow: hidden;
-    border: 1px solid #dbe3ed;
-    border-radius: 8px;
-    background-color: #f1f5f9;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--soft);
 }
 
 .book-cover img {
@@ -23,8 +24,8 @@
     display: grid;
     place-items: center;
     padding: 1rem;
-    background-color: #edf2f7;
-    color: #64748b;
+    background: var(--soft);
+    color: var(--muted);
     font-size: 0.95rem;
     text-align: center;
 }
@@ -33,6 +34,7 @@
     display: none;
 }
 
+/* Larger cover on the book details page */
 .book-cover-large {
     width: 260px;
     max-width: 100%;
@@ -43,24 +45,26 @@
     padding-bottom: 2rem;
 }
 
+/* Credit beneath externally sourced covers */
 .book-cover-credit {
     position: absolute;
     right: 0;
     bottom: 0;
     left: 0;
     padding: 0.25rem 0.5rem;
-    background-color: rgba(255, 255, 255, 0.95);
-    color: #163a63;
+    background: var(--surface);
+    color: var(--link);
     font-size: 0.75rem;
     line-height: 1.4;
     text-align: center;
 }
 
 .book-cover-credit:focus-visible {
-    outline: 3px solid #0e7490;
+    outline: 3px solid var(--focus);
     outline-offset: -3px;
 }
 
+/* Keep the details buttons aligned at the bottom */
 .catalogue-card {
     display: flex;
     flex-direction: column;
@@ -70,13 +74,7 @@
     overflow-wrap: anywhere;
 }
 
-.catalogue-card > a {
-    align-self: flex-start;
-    margin-top: auto;
-    padding-top: 1rem;
-    font-weight: bold;
-}
-
+/* Catalogue pagination */
 .catalogue-pagination {
     display: flex;
     flex-wrap: wrap;
@@ -92,34 +90,10 @@
 
 .catalogue-pagination p {
     margin: 0;
-    color: #475569;
+    color: var(--muted);
 }
 
-.catalogue-page-button {
-    min-height: 44px;
-    padding: 0.7rem 1.25rem;
-    border: 1px solid #163a63;
-    border-radius: 6px;
-    background-color: #ffffff;
-    color: #163a63;
-    font: inherit;
-    cursor: pointer;
-}
-
-.catalogue-page-button:hover:not(:disabled) {
-    background-color: #e8eff7;
-}
-
-.catalogue-page-button:focus-visible {
-    outline: 3px solid #0e7490;
-    outline-offset: 3px;
-}
-
-.catalogue-page-button:disabled {
-    opacity: 0.5;
-    cursor: default;
-}
-
+/* Pagination button styling is shared in style.css. */
 @media (max-width: 600px) {
     .catalogue-pagination {
         display: grid;

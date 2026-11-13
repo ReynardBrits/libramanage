@@ -149,18 +149,18 @@ function requireCsrf(req, res, next) {
 async function findPublicUser(userId) {
     const [users] = await pool.execute(`
     SELECT
-      u.user_id AS userId,
-      u.first_name AS firstName,
-      u.last_name AS lastName,
-      u.email,
-      r.role_name AS roleName,
-      m.member_number AS memberNumber,
-      m.borrowing_status AS borrowingStatus
+        u.user_id AS userId,
+        u.first_name AS firstName,
+        u.last_name AS lastName,
+        u.email,
+        r.role_name AS roleName,
+        m.member_number AS memberNumber,
+        m.borrowing_status AS borrowingStatus
     FROM users AS u
     INNER JOIN roles AS r ON r.role_id = u.role_id
     LEFT JOIN members AS m ON m.user_id = u.user_id
     WHERE u.user_id = ? AND u.status = 'active'
-  `, [userId]);
+    `, [userId]);
 
     return users[0] || null;
 }
@@ -206,17 +206,17 @@ router.post(
 
             const [result] = await connection.execute(`
         INSERT INTO users (
-          role_id, first_name, last_name, email, password_hash
+            role_id, first_name, last_name, email, password_hash
         )
         VALUES (?, ?, ?, ?, ?)
-      `, [roles[0].role_id, firstName, lastName, email, passwordHash]);
+        `, [roles[0].role_id, firstName, lastName, email, passwordHash]);
 
             const memberNumber = `LM-${String(result.insertId).padStart(6, "0")}`;
 
             await connection.execute(`
         INSERT INTO members (user_id, member_number, date_joined)
         VALUES (?, ?, CURRENT_DATE())
-      `, [result.insertId, memberNumber]);
+        `, [result.insertId, memberNumber]);
 
             await connection.commit();
 

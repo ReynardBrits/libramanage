@@ -1,7 +1,3 @@
--- LibraManage Step 9 Catalogue Schema
--- Initial catalogue tables for the LibraManage MySQL database.
--- Run this complete file in MySQL Workbench.
-
 CREATE DATABASE IF NOT EXISTS libramanage
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_0900_ai_ci;

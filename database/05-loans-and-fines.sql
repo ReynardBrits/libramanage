@@ -1,9 +1,8 @@
 USE libramanage;
 
--- =====================================================
 -- Loans
 -- Records which member borrowed a physical book copy.
--- =====================================================
+
 
 CREATE TABLE IF NOT EXISTS loans (
     loan_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -83,11 +82,9 @@ CREATE TABLE IF NOT EXISTS loans (
         CHECK (daily_fine_rate >= 0)
 ) ENGINE = InnoDB;
 
-
--- =====================================================
 -- Fines
 -- One overdue fine can be recorded for each loan.
--- =====================================================
+
 
 CREATE TABLE IF NOT EXISTS fines (
     fine_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -120,10 +117,8 @@ CREATE TABLE IF NOT EXISTS fines (
 ) ENGINE = InnoDB;
 
 
--- =====================================================
 -- Payments
 -- Supports full or partial payments against a fine.
--- =====================================================
 
 CREATE TABLE IF NOT EXISTS payments (
     payment_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -148,12 +143,6 @@ CREATE TABLE IF NOT EXISTS payments (
 ) ENGINE = InnoDB;
 
 
--- =====================================================
--- System policies
--- Stores configurable borrowing rules.
--- NULL updated_by means an initial setup value.
--- =====================================================
-
 CREATE TABLE IF NOT EXISTS system_policies (
     policy_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
@@ -174,9 +163,6 @@ CREATE TABLE IF NOT EXISTS system_policies (
 ) ENGINE = InnoDB;
 
 
--- Initial demonstration settings.
--- Existing policy values are preserved if this is run again.
-
 INSERT INTO system_policies (
     policy_name,
     policy_value
@@ -189,10 +175,6 @@ VALUES
 ON DUPLICATE KEY UPDATE
     policy_name = system_policies.policy_name;
 
-
--- =====================================================
--- Verification
--- =====================================================
 
 SELECT
     TABLE_NAME AS table_name
